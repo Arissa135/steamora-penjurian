@@ -113,7 +113,7 @@ else:
         st.link_button(f"🔗 Klik Di Sini Untuk Membuka Poster {id_poster_pilihan}", str(link_poster), type="primary")
 
     # Makluman mengenai pemarkahan nombor perpuluhan
-    st.warning("💡 **Peringatan Pemarkahan:** Anda dibenarkan memasukkan markah dalam bentuk **nombor perpuluhan** (contoh: `0.3`, `1.27`, `2.5`) dengan menaip terus markah pada ruangan input di sebelah kanan, atau menggunakan butang tambah dan tolak di mana setiap klik pada butang ersebut akan menambah atau mengurangkan markah sebanyak **0.25**.")
+    st.warning("💡 **Peringatan Pemarkahan:** Anda dibenarkan memasukkan markah dalam bentuk **nombor perpuluhan** (contoh: `0.3`, `1.27`, `2.5`) dengan **menaip terus markah pada ruangan input di sebelah kanan**, atau **menggunakan butang tambah dan tolak** di mana setiap klik pada butang tersebut akan **menambah atau mengurangkan markah** sebanyak **0.25**.")
 
     with st.form("borang_penjurian"):
         total_score = 0.0
