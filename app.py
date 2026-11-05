@@ -61,7 +61,7 @@ if nama_juri_pilihan != "-- Pilih Nama Juri --":
 # 5. Rubrik Pemarkahan Lengkap (Point Form Ke Bawah)
 rubrik = [
     ("1. Tajuk, Nama Penulis dan Institusi", 3, 
-     "* Tajuk jelas dan tepat menggambarkan fokus kajian. (0-1)\n* Nama dan institusi penulis lengkap dinyatakan. (0-1)\n* Maklumat penulis disediakan. (0-1)"),
+     "* Tajuk jelas dan tepat menggambarkan fokus kajian. [Skor 0-1]\n* Nama dan institusi penulis lengkap dinyatakan. (Skor 0-1)\n* Maklumat penulis disediakan. (Skor 0-1)"),
     
     ("2. Abstrak", 8, 
      "* Masalah kajian jelas dan spesifik. (0-1)\n* Objektif kajian dirumus dengan tepat. (0-1)\n* Maklumat peserta diberi dengan lengkap. (0-1)\n* Intervensi diterangkan dengan jelas. (0-1)\n* Kaedah pengumpulan data sesuai dan jelas. (0-1)\n* Dapatan disokong oleh bukti jelas. (0-2)\n* Kesimpulan berasaskan dapatan kajian. (0-1)"),
