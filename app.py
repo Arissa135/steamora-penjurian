@@ -4,7 +4,7 @@ import pandas as pd
 # 1. Konfigurasi Halaman Web
 st.set_page_config(page_title="Penjurian Poster STEAMORA 2026", layout="wide", page_icon="🏆")
 
-st.title("🏆 Platform Penjurian Poster Kajian Tindakan STEAMORA 2026")
+st.title("🏆 SISTEM PENILAIAN JURI POSTER KAJIAN TINDAKAN STEAMORA 2026")
 st.write("Sila pilih nama anda di bar sampingan (sidebar) untuk memulakan pemarkahan.")
 st.markdown("---")
 
