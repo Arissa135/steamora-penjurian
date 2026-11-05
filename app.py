@@ -114,13 +114,13 @@ else:
 
 # Makluman Pemarkahan Perpuluhan & Skala Skor (Rapat Ke Kiri / Selari)
     st.warning("""
-💡 **Peringatan Pemarkahan:** Markah dalam bentuk **nombor perpuluhan** (contoh: `0.3`, `1.27`, `2.5`) dibenarkan. Anda boleh **menaip terus markah** pada ruangan input atau menggunakan **butang `+` / `-`** (selang `0.25` markah bagi setiap klik).""")
+💡 <span style="color: black;">**Peringatan Pemarkahan:** Markah dalam bentuk **nombor perpuluhan** (contoh: `0.3`, `1.27`, `2.5`) dibenarkan. Anda boleh **menaip terus markah** pada ruangan input atau menggunakan **butang `+` / `-`** (selang `0.25` markah bagi setiap klik).""")
 # Makluman Pemarkahan Perpuluhan & Skala Skor (Rapat Ke Kiri / Selari)
     st.warning("""
-💡 Sekiranya penilaian dihantar **lebih daripada sekali** oleh juri yang sama bagi poster yang sama, hanya penilaian **TERKINI** akan diambil kira dalam pengiraan markah.""")
+💡 <span style="color: black;">Sekiranya penilaian dihantar **lebih daripada sekali** oleh juri yang sama bagi poster yang sama, hanya penilaian **TERKINI** akan diambil kira dalam pengiraan markah.""")
 # Makluman Pemarkahan Perpuluhan & Skala Skor (Rapat Ke Kiri / Selari)
     st.warning("""
-**Skala Pemarkahan:** Skor Minimum, 0 = Sangat Tidak Setuju |<---------->| Skor Maksimum = Sangat Setuju
+<span style="color: black;">**Skala Pemarkahan:** Skor Minimum, 0 = Sangat Tidak Setuju |<---------->| Skor Maksimum = Sangat Setuju
 """)
 
     with st.form("borang_penjurian"):
