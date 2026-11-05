@@ -2,53 +2,53 @@ import streamlit as st
 import pandas as pd
 from streamlit_gsheets import GSheetsConnection
 
-# 1. Konfigurasi Halaman Web
+# 1. Konfigurasi Halaman
 st.set_page_config(page_title="Penjurian Poster STEMORA 2026", layout="wide", page_icon="🏆")
 
 st.title("🏆 Platform Penjurian Poster Kajian Tindakan STEMORA 2026")
-st.write("Sila pilih nama juri dan ID poster untuk memulakan pemarkahan.")
+st.write("Sila pilih nama anda di bar sampingan (sidebar) untuk memulakan pemarkahan.")
 st.markdown("---")
 
-# Sambungan ke Google Sheets
+# 2. Sambungan ke Google Sheets
 conn = st.connection("gsheets", type=GSheetsConnection)
 
-# 2. Muat Turun Data Agihan Juri dari Google Sheets
+# 3. Baca Data Agihan Juri (Tab 'Agihan')
 try:
-    # Membaca helaian Agihan (ttl=0 atau ttl=10 untuk elak simpanan cache lama)
-    df_agihan = conn.read(worksheet="Agihan", ttl=10)
-    
-    # Ambil 3 lajur pertama sahaja dan buang baris yang kosong
-    df_agihan = df_agihan.iloc[:, :3]
+    df_agihan = conn.read(worksheet="Agihan", ttl=5)
+    # Bersihkan data: Ambil 3 lajur pertama & buang baris kosong
+    df_agihan = df_agihan.dropna(how="all").iloc[:, :3]
     df_agihan.columns = ["Nama Juri", "ID Poster", "Tajuk Poster"]
-    df_agihan.dropna(how="all", inplace=True)
 except Exception as e:
     st.error(f"⚠️ Ralat membaca helaian 'Agihan': {e}")
+    st.info("Sila pastikan tab 'Agihan' wujud dan mempunyai data di Google Sheets.")
     st.stop()
-    
-# Sidebar: Pilihan Nama Juri & Poster Dinamik
+
+# 4. Kawasan Sidebar (Drop-down Dinamik)
 st.sidebar.header("📋 Maklumat Penjurian")
 
-# Drop-down 1: Nama Juri
-senarai_juri = ["-- Pilih Nama Juri --"] + list(df_agihan["Nama Juri"].unique())
+# Drop-down 1: Pilih Nama Juri
+senarai_juri = ["-- Pilih Nama Juri --"] + sorted(list(df_agihan["Nama Juri"].astype(str).unique()))
 nama_juri_pilihan = st.sidebar.selectbox("Pilih Nama Juri", senarai_juri)
 
 id_poster_pilihan = None
 tajuk_poster = ""
 
 if nama_juri_pilihan != "-- Pilih Nama Juri --":
-    # Tapis senarai poster milik juri yang dipilih sahaja
+    # Tapis data mengikut juri yang dipilih
     df_juri_poster = df_agihan[df_agihan["Nama Juri"] == nama_juri_pilihan]
     
-    # Drop-down 2: ID Poster
-    senarai_poster = ["-- Pilih ID Poster --"] + list(df_juri_poster["ID Poster"].unique())
+    # Drop-down 2: Pilih ID Poster milik Juri tersebut sahaja
+    senarai_poster = ["-- Pilih ID Poster --"] + list(df_juri_poster["ID Poster"].astype(str).unique())
     id_poster_pilihan = st.sidebar.selectbox("Pilih ID / Kod Poster", senarai_poster)
     
-    # Paparan Tajuk Poster Automatik
+    # Papar Tajuk Poster secara Automatik
     if id_poster_pilihan and id_poster_pilihan != "-- Pilih ID Poster --":
-        tajuk_poster = df_juri_poster[df_juri_poster["ID Poster"] == id_poster_pilihan]["Tajuk Poster"].values[0]
-        st.sidebar.markdown(f"**Tajuk / Institusi:**\n\n*{tajuk_poster}*")
+        match_tajuk = df_juri_poster[df_juri_poster["ID Poster"] == id_poster_pilihan]["Tajuk Poster"].values
+        if len(match_tajuk) > 0:
+            tajuk_poster = match_tajuk[0]
+            st.sidebar.markdown(f"**Tajuk / Institusi:**\n\n*{tajuk_poster}*")
 
-# 3. Kriteria Rubrik Pemarkahan (13 Kriteria)
+# 5. Rubrik Pemarkahan (13 Kriteria - Susunan Baharu)
 rubrik = [
     ("1. Tajuk, Nama Penulis dan Institusi", 3),
     ("2. Abstrak", 8),
@@ -65,16 +65,15 @@ rubrik = [
     ("13. Kreativiti dan Reka Bentuk Visual", 4)
 ]
 
+# 6. Borang Pemarkahan Juri
 st.subheader("📝 Borang Pemarkahan Juri")
 
 if not nama_juri_pilihan or nama_juri_pilihan == "-- Pilih Nama Juri --" or not id_poster_pilihan or id_poster_pilihan == "-- Pilih ID Poster --":
-    st.info("👈 Sila pilih **Nama Juri** dan **ID Poster** di bar sampingan (Sidebar) terlebih dahulu untuk membuka borang pemarkahan.")
+    st.info("👈 Sila pilih **Nama Juri** dan **ID Poster** di bar sampingan (Sidebar) terlebih dahulu.")
 else:
-    # Papar info poster yang sedang dijuri
-    st.success(f"📌 **Menjuri:** {id_poster_pilihan} | **Tajuk:** {tajuk_poster} | **Juri:** {nama_juri_pilihan}")
+    st.success(f"📌 **Menjuri:** {id_poster_pilihan} | **Juri:** {nama_juri_pilihan}")
     
     with st.form("borang_penjurian"):
-        markah_input = {}
         total_score = 0.0
 
         col_k, col_m = st.columns([3, 1])
@@ -115,10 +114,11 @@ else:
 
         if submitted:
             try:
-                # Baca data sedia ada di Rekap
+                # Baca data sedia ada dari Rekap
                 existing_data = conn.read(worksheet="Rekap", ttl=0)
+                existing_data = existing_data.dropna(how="all")
                 
-                # Sediakan data baharu
+                # Sediakan rekod baharu
                 new_row = pd.DataFrame([{
                     "Nama Juri": nama_juri_pilihan,
                     "ID Poster": id_poster_pilihan,
@@ -128,11 +128,11 @@ else:
                     "Pingat": pingat
                 }])
 
-                # Gabung & simpan ke Google Sheets
+                # Gabungkan & Simpan ke tab 'Rekap'
                 updated_df = pd.concat([existing_data, new_row], ignore_index=True)
                 conn.update(worksheet="Rekap", data=updated_df)
                 
                 st.balloons()
-                st.success(f"✅ Keputusan penjurian bagi **{id_poster_pilihan}** berjaya disimpan!")
+                st.success(f"✅ Keputusan penjurian untuk ID Poster **{id_poster_pilihan}** berjaya disimpan ke tab Rekap!")
             except Exception as e:
-                st.error(f"Ralat semasa menyimpan data: {e}")
+                st.error(f"Ralat semasa menyimpan data ke tab Rekap: {e}")
