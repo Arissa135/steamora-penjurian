@@ -30,8 +30,8 @@ except Exception as e:
 # 4. Kawasan Sidebar (Drop-down Dinamik)
 st.sidebar.header("📋 Maklumat Penjurian")
 
-# Drop-down 1: Pilih Nama Juri
-senarai_juri = ["-- Pilih Nama Juri --"] + sorted(list(df_agihan["Nama Juri"].astype(str).unique()))
+# Drop-down 1: Pilih Nama Juri (Mengikut urutan asal dari atas ke bawah di Google Sheets)
+senarai_juri = ["-- Pilih Nama Juri --"] + list(df_agihan["Nama Juri"].astype(str).unique())
 nama_juri_pilihan = st.sidebar.selectbox("Pilih Nama Juri", senarai_juri)
 
 id_poster_pilihan = None
@@ -41,7 +41,7 @@ link_poster = ""
 if nama_juri_pilihan != "-- Pilih Nama Juri --":
     df_juri_poster = df_agihan[df_agihan["Nama Juri"] == nama_juri_pilihan]
     
-    # Drop-down 2: Pilih ID Poster milik Juri
+    # Drop-down 2: Pilih ID Poster milik Juri (Juga mengikut urutan asal dari atas ke bawah)
     senarai_poster = ["-- Pilih ID Poster --"] + list(df_juri_poster["ID Poster"].astype(str).unique())
     id_poster_pilihan = st.sidebar.selectbox("Pilih ID / Kod Poster", senarai_poster)
     
