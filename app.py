@@ -61,43 +61,43 @@ if nama_juri_pilihan != "-- Pilih Nama Juri --":
 # 5. Rubrik Pemarkahan Lengkap (Point Form Ke Bawah)
 rubrik = [
     ("1. Tajuk, Nama Penulis dan Institusi", 3, 
-     "* Tajuk jelas dan tepat menggambarkan fokus kajian. [Skor 0-1]\n* Nama dan institusi penulis lengkap dinyatakan. (Skor 0-1)\n* Maklumat penulis disediakan. (Skor 0-1)"),
+     "* Tajuk jelas dan tepat menggambarkan fokus kajian. [Skor 0-1]\n* Nama dan institusi penulis lengkap dinyatakan. [Skor 0-1]\n* Maklumat penulis disediakan. [Skor 0-1]"),
     
     ("2. Abstrak", 8, 
-     "* Masalah kajian jelas dan spesifik. (0-1)\n* Objektif kajian dirumus dengan tepat. (0-1)\n* Maklumat peserta diberi dengan lengkap. (0-1)\n* Intervensi diterangkan dengan jelas. (0-1)\n* Kaedah pengumpulan data sesuai dan jelas. (0-1)\n* Dapatan disokong oleh bukti jelas. (0-2)\n* Kesimpulan berasaskan dapatan kajian. (0-1)"),
+     "* Masalah kajian jelas dan spesifik. [Skor 0-1]\n* Objektif kajian dirumus dengan tepat. [Skor 0-1]\n* Maklumat peserta diberi dengan lengkap. [Skor 0-1]\n* Intervensi diterangkan dengan jelas. [Skor 0-1]\n* Kaedah pengumpulan data sesuai dan jelas. [Skor 0-1]\n* Dapatan disokong oleh bukti jelas. [Skor 0-2]\n* Kesimpulan berasaskan dapatan kajian. [Skor 0-1]"),
     
     ("3. Latar Belakang Kajian", 7, 
-     "* Latar belakang kajian diterangkan lengkap. (0-2)\n* Masalah dijelaskan dengan mendalam. (0-2)\n* Bukti awal masalah dikemukakan jelas. (0-2)\n* Rasional kajian difahami dengan baik. (0-1)"),
+     "* Latar belakang kajian diterangkan lengkap. [Skor 0-2]\n* Masalah dijelaskan dengan mendalam. [Skor 0-2]\n* Bukti awal masalah dikemukakan jelas. [Skor 0-2]\n* Rasional kajian difahami dengan baik. [Skor 0-1]"),
     
     ("4. Objektif Kajian", 7, 
-     "* Objektif umum jelas dan berkaitan dengan masalah. (0-2)\n* Objektif khusus jelas dan boleh diukur. (0-3)\n* Objektif realistik dan boleh dicapai melalui intervensi. (0-2)"),
+     "* Objektif umum jelas dan berkaitan dengan masalah. [Skor 0-2]\n* Objektif khusus jelas dan boleh diukur. [Skor 0-3]\n* Objektif realistik dan boleh dicapai melalui intervensi. [Skor 0-2]"),
     
     ("5. Intervensi Kajian", 8, 
-     "* Masalah dikenal pasti dengan jelas. (0-1)\n* Perancangan intervensi teratur. (0-2)\n* Intervensi dilaksanakan dengan sistematik. (0-2)\n* Pelaksanaan dipantau dengan rapi. (0-1)\n* Keberkesanan intervensi dinilai. (0-2)"),
+     "* Masalah dikenal pasti dengan jelas. [Skor 0-1]\n* Perancangan intervensi teratur. [Skor 0-2]\n* Intervensi dilaksanakan dengan sistematik. [Skor 0-2]\n* Pelaksanaan dipantau dengan rapi. [Skor 0-1]\n* Keberkesanan intervensi dinilai. [Skor 0-2]"),
     
     ("6. Metodologi Kajian", 8, 
-     "* Penerangan peserta atau kumpulan sasaran lengkap. (0-2)\n* Tempoh pelaksanaan jelas. (0-1)\n* Instrumen sesuai untuk kajian. (0-2)\n* Kaedah pengumpulan data jelas dan tepat. (0-1)\n* Analisis data sesuai dan jelas. (0-2)"),
+     "* Penerangan peserta atau kumpulan sasaran lengkap. [Skor 0-2]\n* Tempoh pelaksanaan jelas. [Skor 0-1]\n* Instrumen sesuai untuk kajian. [Skor 0-2]\n* Kaedah pengumpulan data jelas dan tepat. [Skor 0-1]\n* Analisis data sesuai dan jelas. [Skor 0-2]"),
     
     ("7. Dapatan Kajian dan Bukti", 15, 
-     "* Dapatan sesuai dengan objektif. (0-3)\n* Data perbandingan jelas. (0-3)\n* Perubahan dianalisis dengan tepat. (0-3)\n* Visual data tepat dan jelas. (0-2)\n* Tafsiran dibuat berdasarkan bukti. (0-2)\n* Keberkesanan dibincang dengan baik. (0-2)"),
+     "* Dapatan sesuai dengan objektif. [Skor 0-3]\n* Data perbandingan jelas. [Skor 0-3]\n* Perubahan dianalisis dengan tepat. [Skor 0-3]\n* Visual data tepat dan jelas. [Skor 0-2]\n* Tafsiran dibuat berdasarkan bukti. [Skor 0-2]\n* Keberkesanan dibincang dengan baik. [Skor 0-2]"),
     
     ("8. Perubahan yang Diperhatikan dan Refleksi", 6, 
-     "* Perubahan peserta diterangkan. (0-2)\n* Aspek berjaya dan cabaran dibincang. (0-2)\n* Cadangan diperoleh dari refleksi. (0-2)"),
+     "* Perubahan peserta diterangkan. [Skor 0-2]\n* Aspek berjaya dan cabaran dibincang. [Skor 0-2]\n* Cadangan diperoleh dari refleksi. [Skor 0-2]"),
     
     ("9. Kesimpulan dan Cadangan", 5, 
-     "* Kesimpulan tepat berdasarkan dapatan. (0-2)\n* Cadangan boleh dilaksanakan. (0-2)\n* Potensi intervensi dijelaskan. (0-1)"),
+     "* Kesimpulan tepat berdasarkan dapatan. [Skor 0-2]\n* Cadangan boleh dilaksanakan. [Skor 0-2]\n* Potensi intervensi dijelaskan. [Skor 0-1]"),
     
     ("10. Kesinambungan dan Keselarasan Kajian", 20, 
-     "* Hubungan masalah dengan objektif jelas. (0-4)\n* Intervensi sesuai dengan objektif. (0-4)\n* Metodologi dan instrumen sesuai dengan objektif. (0-4)\n* Dapatan lengkap serta disokong bukti. (0-5)\n* Kesimpulan tepat dari dapatan. (0-3)"),
+     "* Hubungan masalah dengan objektif jelas. [Skor 0-4]\n* Intervensi sesuai dengan objektif. [Skor 0-4]\n* Metodologi dan instrumen sesuai dengan objektif. [Skor 0-4]\n* Dapatan lengkap serta disokong bukti. [Skor 0-5]\n* Kesimpulan tepat dari dapatan. [Skor 0-3]"),
     
     ("11. Rujukan", 4, 
-     "* Rujukan relevan dengan kajian. (0-2)\n* Format APA edisi ke-7 dipatuhi. (0-1)\n* Petikan dan rujukan konsisten. (0-1)"),
+     "* Rujukan relevan dengan kajian. [Skor 0-2]\n* Format APA edisi ke-7 dipatuhi. [Skor 0-1]\n* Petikan dan rujukan konsisten. [Skor 0-1]"),
     
     ("12. Pematuhan Format dan Kelengkapan Kandungan Poster", 5, 
-     "* Semua bahagian wajib dalam template lengkap. (0-3)\n* Susunan kandungan mengikut struktur template. (0-1)\n* Mematuhi format dan keperluan teknikal. (0-1)"),
+     "* Semua bahagian wajib dalam template lengkap. [Skor 0-3]\n* Susunan kandungan mengikut struktur template. [Skor 0-1]\n* Mematuhi format dan keperluan teknikal. [Skor 0-1]"),
     
     ("13. Kreativiti dan Reka Bentuk Visual", 4, 
-     "* Susun atur kemas dan teratur. (0-1)\n* Teks mudah dibaca dan tiada tipografi. (0-1)\n* Warna, grafik dan visual yang sesuai. (0-1)\n* Maklumat disampaikan dengan jelas. (0-1)")
+     "* Susun atur kemas dan teratur. [Skor 0-1]\n* Teks mudah dibaca dan tiada tipografi. [Skor 0-1]\n* Warna, grafik dan visual yang sesuai. [Skor 0-1]\n* Maklumat disampaikan dengan jelas. [Skor 0-1]")
 ]
 
 # 6. Borang Pemarkahan Juri
