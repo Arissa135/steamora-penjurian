@@ -224,77 +224,72 @@ else:
     </div>
     """, unsafe_allow_html=True)
 
-    # Menggunakan Form supaya tiada arahan "Press Enter to Submit" di setiap input
-    with st.form("borang_penjurian"):
-        kriteria_scores = []
-        total_score = 0.0
+    # TANPA FORM: Pengiraan automatik secara Real-time
+    kriteria_scores = []
+    total_score = 0.0
 
-        for k_idx, item in enumerate(rubrik_detail, 1):
-            st.markdown(f"### {item['kriteria']} *(Maks: {item['max_kriteria']})*")
-            
-            sub_score_total = 0.0
-            
-            # Memaparkan input markah bagi setiap aspek pecahan
-            for a_idx, (aspek_text, max_aspek) in enumerate(item["aspek"], 1):
-                col_text, col_input = st.columns([3, 1])
-                with col_text:
-                    st.write(f"• {aspek_text} **[Skor 0-{int(max_aspek) if max_aspek.is_integer() else max_aspek}]**")
-                with col_input:
-                    val = st.number_input(
-                        label=f"{item['kriteria']}_a{a_idx}",
-                        min_value=0.0,
-                        max_value=float(max_aspek),
-                        step=0.1,
-                        key=f"{id_poster_pilihan}_k{k_idx}_a{a_idx}",
-                        label_visibility="collapsed"
-                    )
-                    sub_score_total += val
-            
-            # Jumlah terkumpul bagi kriteria ini
-            kriteria_scores.append(sub_score_total)
-            total_score += sub_score_total
-            
-            st.info(f"📊 **Jumlah Markah bagi {item['kriteria']}:** {sub_score_total:.2f} / {item['max_kriteria']}")
-            st.markdown("---")
+    for k_idx, item in enumerate(rubrik_detail, 1):
+        st.markdown(f"### {item['kriteria']} *(Maks: {item['max_kriteria']})*")
+        
+        sub_score_total = 0.0
+        
+        for a_idx, (aspek_text, max_aspek) in enumerate(item["aspek"], 1):
+            col_text, col_input = st.columns([3, 1])
+            with col_text:
+                st.write(f"• {aspek_text} **[Skor 0-{int(max_aspek) if max_aspek.is_integer() else max_aspek}]**")
+            with col_input:
+                val = st.number_input(
+                    label=f"{item['kriteria']}_a{a_idx}",
+                    min_value=0.0,
+                    max_value=float(max_aspek),
+                    step=0.1,
+                    key=f"{id_poster_pilihan}_k{k_idx}_a{a_idx}",
+                    label_visibility="collapsed"
+                )
+                sub_score_total += val
+        
+        kriteria_scores.append(sub_score_total)
+        total_score += sub_score_total
+        
+        # Paparan jumlah markah bagi kriteria ini (Terus dikira secara live!)
+        st.info(f"📊 **Jumlah Markah bagi {item['kriteria']}:** {sub_score_total:.2f} / {item['max_kriteria']}")
+        st.markdown("---")
 
-        if total_score >= 85:
-            pingat = "GOLD"
-            badge = "🥇 GOLD"
-        elif total_score >= 70:
-            pingat = "SILVER"
-            badge = "🥈 SILVER"
-        else:
-            pingat = "BRONZE"
-            badge = "🥉 BRONZE"
+    if total_score >= 85:
+        pingat = "GOLD"
+        badge = "🥇 GOLD"
+    elif total_score >= 70:
+        pingat = "SILVER"
+        badge = "🥈 SILVER"
+    else:
+        pingat = "BRONZE"
+        badge = "🥉 BRONZE"
 
-        st.metric(label="Jumlah Markah Keseluruhan (100)", value=f"{total_score:.2f} / 100")
-        st.subheader(f"Keputusan Pingat: {badge}")
+    st.metric(label="Jumlah Markah Keseluruhan (100)", value=f"{total_score:.2f} / 100")
+    st.subheader(f"Keputusan Pingat: {badge}")
 
-        # HANYA SATU BUTANG HANTAR DI HUJUNG
-        submitted = st.form_submit_button("Hantar & Simpan Keputusan", use_container_width=True)
+    # BUTANG HANTAR DI HUJUNG KESELURUHAN
+    if st.button("Hantar & Simpan Keputusan", type="primary", use_container_width=True):
+        payload = {
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "nama_juri": nama_juri_pilihan,
+            "id_poster": id_poster_pilihan,
+            "total_score": round(total_score, 2),
+            "pingat": pingat
+        }
+        for i in range(13):
+            payload[f"k{i+1}"] = round(kriteria_scores[i], 2)
 
-        if submitted:
-            payload = {
-                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "nama_juri": nama_juri_pilihan,
-                "id_poster": id_poster_pilihan,
-                "total_score": round(total_score, 2),
-                "pingat": pingat
-            }
-            # Memasukkan markah bagi setiap 13 kriteria ke dalam rekod
-            for i in range(13):
-                payload[f"k{i+1}"] = round(kriteria_scores[i], 2)
-
-            try:
-                res = requests.post(WEB_APP_URL, json=payload)
-                if res.status_code == 200:
-                    st.balloons()
-                    st.success(f"✅ Keputusan penjurian bagi **{id_poster_pilihan}** BERJAYA DISIMPAN ke Google Sheets (`Rekap`)!")
-                    st.write(f"**Ringkasan:** Juri: {nama_juri_pilihan} | ID: {id_poster_pilihan} | Markah: {total_score:.2f} | Pingat: {pingat}")
-                else:
-                    st.error("⚠️ Gagal menyimpan ke Google Sheets. Sila semak pautan Web App Script anda.")
-            except Exception as ex:
-                st.error(f"⚠️ Ralat teknikal semasa penghantaran: {ex}")
+        try:
+            res = requests.post(WEB_APP_URL, json=payload)
+            if res.status_code == 200:
+                st.balloons()
+                st.success(f"✅ Keputusan penjurian bagi **{id_poster_pilihan}** BERJAYA DISIMPAN ke Google Sheets (`Rekap`)!")
+                st.write(f"**Ringkasan:** Juri: {nama_juri_pilihan} | ID: {id_poster_pilihan} | Markah: {total_score:.2f} | Pingat: {pingat}")
+            else:
+                st.error("⚠️ Gagal menyimpan ke Google Sheets. Sila semak pautan Web App Script anda.")
+        except Exception as ex:
+            st.error(f"⚠️ Ralat teknikal semasa penghantaran: {ex}")
 
 # 7. Bahagian Kredit / Footer
 st.markdown("---")
