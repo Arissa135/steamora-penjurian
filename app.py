@@ -284,7 +284,7 @@ else:
             res = requests.post(WEB_APP_URL, json=payload)
             if res.status_code == 200:
                 st.balloons()
-                st.success(f"✅ Keputusan penjurian bagi **{id_poster_pilihan}** (termasuk semua rincian aspek) BERJAYA DISIMPAN ke Google Sheets (`Rekap`)!")
+                st.success(f"✅ Keputusan penjurian bagi **{id_poster_pilihan}** BERJAYA DISIMPAN ke Google Sheets (`Rekap`)!")
                 st.write(f"**Ringkasan:** Juri: {nama_juri_pilihan} | ID: {id_poster_pilihan} | Markah: {total_score:.2f} | Pingat: {pingat}")
             else:
                 st.error("⚠️ Gagal menyimpan ke Google Sheets. Sila semak pautan Web App Script anda.")
