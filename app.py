@@ -112,16 +112,14 @@ else:
     if link_poster:
         st.link_button(f"🔗 Klik Di Sini Untuk Membuka Poster {id_poster_pilihan}", str(link_poster), type="primary")
 
-# Makluman Pemarkahan Perpuluhan & Skala Skor (Rapat Ke Kiri / Selari)
-    st.warning("""
-💡 **Peringatan Pemarkahan:** Markah dalam bentuk **nombor perpuluhan** (contoh: `0.3`, `1.27`, `2.5`) dibenarkan. Anda boleh **menaip terus markah** pada ruangan input atau menggunakan **butang `+` / `-`** (selang `0.25` markah bagi setiap klik).""")
-# Makluman Pemarkahan Perpuluhan & Skala Skor (Rapat Ke Kiri / Selari)
-    st.warning("""
-💡 Sekiranya penilaian dihantar **lebih daripada sekali** oleh juri yang sama bagi poster yang sama, hanya penilaian **TERKINI** akan diambil kira dalam pengiraan markah.""")
-# Makluman Pemarkahan Perpuluhan & Skala Skor (Rapat Ke Kiri / Selari)
-    st.warning("""
-**Skala Pemarkahan:** Skor Minimum, 0 = Sangat Tidak Setuju |<---------->| Skor Maksimum = Sangat Setuju
-""")
+# Makluman Pemarkahan Perpuluhan & Skala Skor (Rapat Ke Kiri & Teks Hitam)
+    st.markdown("""
+    <div style="background-color: #FFF9E6; border-left: 5px solid #FFA500; padding: 15px; border-radius: 5px; color: #000000; margin-bottom: 20px;">
+        <p style="margin: 0 0 10px 0; color: #000000;">💡 <b>Peringatan Pemarkahan:</b> Markah dalam bentuk <b>nombor perpuluhan</b> (contoh: <code>0.3</code>, <code>1.27</code>, <code>2.5</code>) dibenarkan. Anda boleh <b>menaip terus markah</b> pada ruangan input atau menggunakan <b>butang + / -</b> (selang <code>0.25</code> markah bagi setiap klik).</p>
+        <p style="margin: 0 0 10px 0; color: #000000;">💡 Sekiranya penilaian dihantar <b>lebih daripada sekali</b> oleh juri yang sama bagi poster yang sama, hanya penilaian <b>TERKINI</b> akan diambil kira dalam pengiraan markah.</p>
+        <p style="margin: 0; color: #000000;"><b>Skala Pemarkahan:</b> Skor Minimum, 0 = Sangat Tidak Setuju |&lt;----------&gt;| Skor Maksimum = Sangat Setuju</p>
+    </div>
+    """, unsafe_allow_html=True)
 
     with st.form("borang_penjurian"):
         total_score = 0.0
