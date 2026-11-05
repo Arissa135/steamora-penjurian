@@ -116,6 +116,8 @@ else:
     st.warning("""
 💡 **Peringatan Pemarkahan:** Markah dalam bentuk **nombor perpuluhan** (contoh: `0.3`, `1.27`, `2.5`) dibenarkan. Anda boleh **menaip terus markah** pada ruangan input atau menggunakan **butang `+` / `-`** (selang `0.25` markah bagi setiap klik).
 
+💡 **Sekiranya penilaian dihantar **lebih daripada sekali** oleh juri yang sama bagi poster yang sama, hanya penilaian *TERKINI* akan diambil kira dalam pengiraan markah.
+
  **Skala Pemarkahan:** `Skor Minimum, 0 = Sangat Tidak Setuju |<---------->| Skor Maksimum = Sangat Setuju`
 """)
 
