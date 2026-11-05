@@ -14,13 +14,13 @@ conn = st.connection("gsheets", type=GSheetsConnection)
 
 # 2. Muat Turun Data Agihan Juri dari Google Sheets
 # Muat Turun Data Agihan Juri dari Google Sheets (Secara Spesifik)
+# 2. Muat Turun Data Agihan Juri dari Google Sheets (Guna range 'A:C')
 try:
-    df_agihan = conn.read(worksheet="Agihan", usecols=[0, 1, 2], ttl=10)
-    df_agihan.dropna(how="all", inplace=True) # Buang baris kosong jika ada
+    df_agihan = conn.read(worksheet="Agihan", range="A:C", ttl=10)
+    df_agihan.dropna(how="all", inplace=True) # Buang baris kosong
 except Exception as e:
     st.error(f"⚠️ Ralat membaca helaian 'Agihan': {e}")
     st.stop()
-
 # Sidebar: Pilihan Nama Juri & Poster Dinamik
 st.sidebar.header("📋 Maklumat Penjurian")
 
