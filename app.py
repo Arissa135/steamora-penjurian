@@ -1,26 +1,30 @@
 import streamlit as st
 import pandas as pd
-from streamlit_gsheets import GSheetsConnection
 
-# 1. Konfigurasi Halaman
+# 1. Konfigurasi Halaman Web
 st.set_page_config(page_title="Penjurian Poster STEMORA 2026", layout="wide", page_icon="🏆")
 
 st.title("🏆 Platform Penjurian Poster Kajian Tindakan STEMORA 2026")
 st.write("Sila pilih nama anda di bar sampingan (sidebar) untuk memulakan pemarkahan.")
 st.markdown("---")
 
-# 2. Sambungan ke Google Sheets
-conn = st.connection("gsheets", type=GSheetsConnection)
+# 2. Pautan CSV Google Sheets Anda (Direct Export Link)
+SHEET_ID = "1sfwaqs4owcMfzf5f99d0YcuVS4AZNgQ99Pbh72m0obA"
+URL_AGIHAN = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Agihan"
 
-# 3. Baca Data Agihan Juri (Tab 'Agihan')
+# 3. Baca Data Agihan Juri
+@st.cache_data(ttl=10)
+def load_data_agihan():
+    df = pd.read_csv(URL_AGIHAN)
+    df = df.dropna(how="all").iloc[:, :3]
+    df.columns = ["Nama Juri", "ID Poster", "Tajuk Poster"]
+    return df
+
 try:
-    df_agihan = conn.read(worksheet="Agihan", ttl=5)
-    # Bersihkan data: Ambil 3 lajur pertama & buang baris kosong
-    df_agihan = df_agihan.dropna(how="all").iloc[:, :3]
-    df_agihan.columns = ["Nama Juri", "ID Poster", "Tajuk Poster"]
+    df_agihan = load_data_agihan()
 except Exception as e:
-    st.error(f"⚠️ Ralat membaca helaian 'Agihan': {e}")
-    st.info("Sila pastikan tab 'Agihan' wujud dan mempunyai data di Google Sheets.")
+    st.error(f"⚠️ Ralat membaca data dari Google Sheets: {e}")
+    st.info("Pastikan tetapan Google Sheets disetkan kepada 'Anyone with the link can view/edit'.")
     st.stop()
 
 # 4. Kawasan Sidebar (Drop-down Dinamik)
@@ -34,14 +38,13 @@ id_poster_pilihan = None
 tajuk_poster = ""
 
 if nama_juri_pilihan != "-- Pilih Nama Juri --":
-    # Tapis data mengikut juri yang dipilih
     df_juri_poster = df_agihan[df_agihan["Nama Juri"] == nama_juri_pilihan]
     
-    # Drop-down 2: Pilih ID Poster milik Juri tersebut sahaja
+    # Drop-down 2: Pilih ID Poster
     senarai_poster = ["-- Pilih ID Poster --"] + list(df_juri_poster["ID Poster"].astype(str).unique())
     id_poster_pilihan = st.sidebar.selectbox("Pilih ID / Kod Poster", senarai_poster)
     
-    # Papar Tajuk Poster secara Automatik
+    # Papar Tajuk Poster
     if id_poster_pilihan and id_poster_pilihan != "-- Pilih ID Poster --":
         match_tajuk = df_juri_poster[df_juri_poster["ID Poster"] == id_poster_pilihan]["Tajuk Poster"].values
         if len(match_tajuk) > 0:
@@ -96,7 +99,6 @@ else:
 
         st.markdown("---")
 
-        # Penentuan Pingat
         if total_score >= 85:
             pingat = "GOLD"
             badge = "🥇 GOLD"
@@ -110,29 +112,9 @@ else:
         st.metric(label="Jumlah Markah Keseluruhan (100)", value=f"{total_score} / 100")
         st.subheader(f"Keputusan Pingat: {badge}")
 
-        submitted = st.form_submit_button("Hantar & Simpan Keputusan", use_container_width=True)
+        submitted = st.form_submit_button("Hantar & Semak Keputusan", use_container_width=True)
 
         if submitted:
-            try:
-                # Baca data sedia ada dari Rekap
-                existing_data = conn.read(worksheet="Rekap", ttl=0)
-                existing_data = existing_data.dropna(how="all")
-                
-                # Sediakan rekod baharu
-                new_row = pd.DataFrame([{
-                    "Nama Juri": nama_juri_pilihan,
-                    "ID Poster": id_poster_pilihan,
-                    "Tajuk Poster": tajuk_poster,
-                    "Jumlah Markah": total_score,
-                    "Peratus": f"{total_score}%",
-                    "Pingat": pingat
-                }])
-
-                # Gabungkan & Simpan ke tab 'Rekap'
-                updated_df = pd.concat([existing_data, new_row], ignore_index=True)
-                conn.update(worksheet="Rekap", data=updated_df)
-                
-                st.balloons()
-                st.success(f"✅ Keputusan penjurian untuk ID Poster **{id_poster_pilihan}** berjaya disimpan ke tab Rekap!")
-            except Exception as e:
-                st.error(f"Ralat semasa menyimpan data ke tab Rekap: {e}")
+            st.balloons()
+            st.success(f"✅ Keputusan penjurian bagi **{id_poster_pilihan}** disahkan!")
+            st.write(f"**Ringkasan Data:** Juri: {nama_juri_pilihan} | ID: {id_poster_pilihan} | Markah: {total_score} | Pingat: {pingat}")
