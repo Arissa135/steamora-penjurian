@@ -1,4 +1,4 @@
-import streamlit as st
+zimport streamlit as st
 import pandas as pd
 
 # 1. Konfigurasi Halaman Web
@@ -112,16 +112,16 @@ else:
     if link_poster:
         st.link_button(f"🔗 Klik Di Sini Untuk Membuka Poster {id_poster_pilihan}", str(link_poster), type="primary")
 
-# Makluman Pemarkahan Perpuluhan & Skala Skor (Teks Warna Hitam)
+# Makluman Pemarkahan Perpuluhan & Skala Skor (Rapat Ke Kiri / Selari)
     st.warning("""
-<span style="color: black;">💡 <b>Peringatan Pemarkahan:</b> Markah dalam bentuk <b>nombor perpuluhan</b> (contoh: <code>0.3</code>, <code>1.27</code>, <code>2.5</code>) dibenarkan. Anda boleh <b>menaip terus markah</b> pada ruangan input atau menggunakan <b>butang + / -</b> (selang <code>0.25</code> markah bagi setiap klik).</span>""")
-# Makluman Pemarkahan Perpuluhan & Skala Skor (Teks Warna Hitam)
+💡 **Peringatan Pemarkahan:** Markah dalam bentuk **nombor perpuluhan** (contoh: `0.3`, `1.27`, `2.5`) dibenarkan. Anda boleh **menaip terus markah** pada ruangan input atau menggunakan **butang `+` / `-`** (selang `0.25` markah bagi setiap klik).""")
+# Makluman Pemarkahan Perpuluhan & Skala Skor (Rapat Ke Kiri / Selari)
     st.warning("""
-<span style="color: black;">💡 Sekiranya penilaian dihantar <b>lebih daripada sekali</b> oleh juri yang sama bagi poster yang sama, hanya penilaian <b>TERKINI</b> akan diambil kira dalam pengiraan markah.</span>""")
-# Makluman Pemarkahan Perpuluhan & Skala Skor (Teks Warna Hitam)
+💡 Sekiranya penilaian dihantar **lebih daripada sekali** oleh juri yang sama bagi poster yang sama, hanya penilaian **TERKINI** akan diambil kira dalam pengiraan markah.""")
+# Makluman Pemarkahan Perpuluhan & Skala Skor (Rapat Ke Kiri / Selari)
     st.warning("""
-<span style="color: black;"><b>Skala Pemarkahan:</b> Skor Minimum, 0 = Sangat Tidak Setuju |<---------->| Skor Maksimum = Sangat Setuju</span>
-""", unsafe_allow_html=True)
+**Skala Pemarkahan:** Skor Minimum, 0 = Sangat Tidak Setuju |<---------->| Skor Maksimum = Sangat Setuju
+""")
 
     with st.form("borang_penjurian"):
         total_score = 0.0
