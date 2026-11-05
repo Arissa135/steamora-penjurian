@@ -30,7 +30,7 @@ except Exception as e:
     st.info("Pastikan tetapan Google Sheets disetkan kepada 'Anyone with the link can view/edit'.")
     st.stop()
 
-# 4. Kawasan Sidebar (Drop-down Dinamik Mengikut Urutan Asal GSheets)
+# 4. Kawasan Sidebar
 st.sidebar.header("📋 Maklumat Penjurian")
 
 senarai_juri = ["-- Pilih Nama Juri --"] + list(df_agihan["Nama Juri"].astype(str).unique())
@@ -57,7 +57,7 @@ if nama_juri_pilihan != "-- Pilih Nama Juri --":
                 st.sidebar.markdown("---")
                 st.sidebar.link_button("📂 Buka / Lihat Poster", str(link_poster), use_container_width=True)
 
-# 5. Struktur Rubrik Berdasarkan Aspek yang Dinilai
+# 5. Struktur Rubrik Berdasarkan Aspek
 rubrik_detail = [
     {
         "kriteria": "1. Tajuk, Nama Penulis dan Institusi",
@@ -224,8 +224,8 @@ else:
     </div>
     """, unsafe_allow_html=True)
 
-    # TANPA FORM: Pengiraan automatik secara Real-time
     kriteria_scores = []
+    aspek_scores = {}
     total_score = 0.0
 
     for k_idx, item in enumerate(rubrik_detail, 1):
@@ -247,11 +247,11 @@ else:
                     label_visibility="collapsed"
                 )
                 sub_score_total += val
+                aspek_scores[f"k{k_idx}_a{a_idx}"] = round(val, 2)
         
         kriteria_scores.append(sub_score_total)
         total_score += sub_score_total
         
-        # Paparan jumlah markah bagi kriteria ini (Terus dikira secara live!)
         st.info(f"📊 **Jumlah Markah bagi {item['kriteria']}:** {sub_score_total:.2f} / {item['max_kriteria']}")
         st.markdown("---")
 
@@ -268,14 +268,14 @@ else:
     st.metric(label="Jumlah Markah Keseluruhan (100)", value=f"{total_score:.2f} / 100")
     st.subheader(f"Keputusan Pingat: {badge}")
 
-    # BUTANG HANTAR DI HUJUNG KESELURUHAN
     if st.button("Hantar & Simpan Keputusan", type="primary", use_container_width=True):
         payload = {
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "nama_juri": nama_juri_pilihan,
             "id_poster": id_poster_pilihan,
             "total_score": round(total_score, 2),
-            "pingat": pingat
+            "pingat": pingat,
+            "aspek_scores": aspek_scores
         }
         for i in range(13):
             payload[f"k{i+1}"] = round(kriteria_scores[i], 2)
@@ -284,7 +284,7 @@ else:
             res = requests.post(WEB_APP_URL, json=payload)
             if res.status_code == 200:
                 st.balloons()
-                st.success(f"✅ Keputusan penjurian bagi **{id_poster_pilihan}** BERJAYA DISIMPAN ke Google Sheets (`Rekap`)!")
+                st.success(f"✅ Keputusan penjurian bagi **{id_poster_pilihan}** (termasuk semua rincian aspek) BERJAYA DISIMPAN ke Google Sheets (`Rekap`)!")
                 st.write(f"**Ringkasan:** Juri: {nama_juri_pilihan} | ID: {id_poster_pilihan} | Markah: {total_score:.2f} | Pingat: {pingat}")
             else:
                 st.error("⚠️ Gagal menyimpan ke Google Sheets. Sila semak pautan Web App Script anda.")
