@@ -1,5 +1,7 @@
 import streamlit as st
 import pandas as pd
+import requests
+from datetime import datetime
 
 # 1. Konfigurasi Halaman Web
 st.set_page_config(page_title="Penjurian Poster STEAMORA 2026", layout="wide", page_icon="🏆")
@@ -8,9 +10,12 @@ st.title("🏆 Platform Penjurian Poster Kajian Tindakan STEAMORA 2026")
 st.write("Sila pilih nama anda di bar sampingan (sidebar) untuk memulakan pemarkahan.")
 st.markdown("---")
 
-# 2. Pautan CSV Google Sheets Anda
+# 2. Pautan CSV & Google Apps Script
 SHEET_ID = "1sfwaqs4owcMfzf5f99d0YcuVS4AZNgQ99Pbh72m0obA"
 URL_AGIHAN = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Agihan"
+
+# URL Google Apps Script Web App Anda
+WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxHD0zYXoEbqgJohzLiXpX36FcEaRJyN-pUMq6p5Ieos2rXYUaQnWSkxWPnzv6sL4w5/exec"
 
 # 3. Baca Data Agihan Juri
 @st.cache_data(ttl=5)
@@ -30,7 +35,6 @@ except Exception as e:
 # 4. Kawasan Sidebar (Drop-down Dinamik Mengikut Urutan Asal GSheets)
 st.sidebar.header("📋 Maklumat Penjurian")
 
-# Drop-down 1: Pilih Nama Juri
 senarai_juri = ["-- Pilih Nama Juri --"] + list(df_agihan["Nama Juri"].astype(str).unique())
 nama_juri_pilihan = st.sidebar.selectbox("Pilih Nama Juri", senarai_juri)
 
@@ -40,12 +44,9 @@ link_poster = ""
 
 if nama_juri_pilihan != "-- Pilih Nama Juri --":
     df_juri_poster = df_agihan[df_agihan["Nama Juri"] == nama_juri_pilihan]
-    
-    # Drop-down 2: Pilih ID Poster milik Juri
     senarai_poster = ["-- Pilih ID Poster --"] + list(df_juri_poster["ID Poster"].astype(str).unique())
     id_poster_pilihan = st.sidebar.selectbox("Pilih ID / Kod Poster", senarai_poster)
     
-    # Papar Tajuk & Pautan Poster
     if id_poster_pilihan and id_poster_pilihan != "-- Pilih ID Poster --":
         row_poster = df_juri_poster[df_juri_poster["ID Poster"] == id_poster_pilihan]
         if not row_poster.empty:
@@ -58,7 +59,7 @@ if nama_juri_pilihan != "-- Pilih Nama Juri --":
                 st.sidebar.markdown("---")
                 st.sidebar.link_button("📂 Buka / Lihat Poster", str(link_poster), use_container_width=True)
 
-# 5. Rubrik Pemarkahan Lengkap (Format [Skor X-Y])
+# 5. Rubrik Pemarkahan Lengkap
 rubrik = [
     ("1. Tajuk, Nama Penulis dan Institusi", 3, 
      "* Tajuk jelas dan tepat menggambarkan fokus kajian. [Skor 0-1]\n* Nama dan institusi penulis lengkap dinyatakan. [Skor 0-1]\n* Maklumat penulis disediakan. [Skor 0-1]"),
@@ -108,11 +109,9 @@ if not nama_juri_pilihan or nama_juri_pilihan == "-- Pilih Nama Juri --" or not 
 else:
     st.success(f"📌 **Menjuri:** {id_poster_pilihan} | **Juri:** {nama_juri_pilihan}")
     
-    # Pautan Poster Utama
     if link_poster:
         st.link_button(f"🔗 Klik Di Sini Untuk Membuka Poster {id_poster_pilihan}", str(link_poster), type="primary")
 
-    # Makluman Pemarkahan Perpuluhan & Skala Skor (Selari Dengan Hanging Indent)
     st.markdown("""
     <div style="background-color: #FFF9E6; border-left: 5px solid #FFA500; padding: 15px; border-radius: 5px; color: #000000; margin-bottom: 20px;">
         <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
@@ -135,8 +134,9 @@ else:
 
     with st.form("borang_penjurian"):
         total_score = 0.0
+        scores_list = []
 
-        for kriteria, max_mark, aspek in rubrik:
+        for idx, (kriteria, max_mark, aspek) in enumerate(rubrik, 1):
             c1, c2 = st.columns([3, 1])
             
             with c1:
@@ -153,6 +153,7 @@ else:
                     label_visibility="collapsed"
                 )
                 total_score += score
+                scores_list.append(score)
             
             st.markdown("---")
 
@@ -169,12 +170,29 @@ else:
         st.metric(label="Jumlah Markah Keseluruhan (100)", value=f"{total_score:.2f} / 100")
         st.subheader(f"Keputusan Pingat: {badge}")
 
-        submitted = st.form_submit_button("Hantar & Semak Keputusan", use_container_width=True)
+        submitted = st.form_submit_button("Hantar & Simpan Keputusan", use_container_width=True)
 
         if submitted:
-            st.balloons()
-            st.success(f"✅ Keputusan penjurian bagi **{id_poster_pilihan}** disahkan!")
-            st.write(f"**Ringkasan Data:** Juri: {nama_juri_pilihan} | ID: {id_poster_pilihan} | Markah: {total_score:.2f} | Pingat: {pingat}")
+            payload = {
+                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "nama_juri": nama_juri_pilihan,
+                "id_poster": id_poster_pilihan,
+                "total_score": round(total_score, 2),
+                "pingat": pingat
+            }
+            for i in range(13):
+                payload[f"k{i+1}"] = scores_list[i]
+
+            try:
+                res = requests.post(WEB_APP_URL, json=payload)
+                if res.status_code == 200:
+                    st.balloons()
+                    st.success(f"✅ Keputusan penjurian bagi **{id_poster_pilihan}** BERJAYA DISIMPAN ke Google Sheets (`Rekap`)!")
+                    st.write(f"**Ringkasan:** Juri: {nama_juri_pilihan} | ID: {id_poster_pilihan} | Markah: {total_score:.2f} | Pingat: {pingat}")
+                else:
+                    st.error("⚠️ Gagal menyimpan ke Google Sheets. Sila semak pautan Web App Script anda.")
+            except Exception as ex:
+                st.error(f"⚠️ Ralat teknikal semasa penghantaran: {ex}")
 
 # 7. Bahagian Kredit / Footer
 st.markdown("---")
