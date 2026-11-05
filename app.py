@@ -2,22 +2,22 @@ import streamlit as st
 import pandas as pd
 
 # 1. Konfigurasi Halaman Web
-st.set_page_config(page_title="Penjurian Poster STEMORA 2026", layout="wide", page_icon="🏆")
+st.set_page_config(page_title="Penjurian Poster STEAMORA 2026", layout="wide", page_icon="🏆")
 
-st.title("🏆 Platform Penjurian Poster Kajian Tindakan STEMORA 2026")
+st.title("🏆 Platform Penjurian Poster Kajian Tindakan STEAMORA 2026")
 st.write("Sila pilih nama anda di bar sampingan (sidebar) untuk memulakan pemarkahan.")
 st.markdown("---")
 
-# 2. Pautan CSV Google Sheets Anda (Direct Export Link)
+# 2. Pautan CSV Google Sheets Anda
 SHEET_ID = "1sfwaqs4owcMfzf5f99d0YcuVS4AZNgQ99Pbh72m0obA"
 URL_AGIHAN = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Agihan"
 
-# 3. Baca Data Agihan Juri
-@st.cache_data(ttl=10)
+# 3. Baca Data Agihan Juri (Termasuk Lajur Link Poster)
+@st.cache_data(ttl=5)
 def load_data_agihan():
     df = pd.read_csv(URL_AGIHAN)
-    df = df.dropna(how="all").iloc[:, :3]
-    df.columns = ["Nama Juri", "ID Poster", "Tajuk Poster"]
+    df = df.dropna(how="all").iloc[:, :4]
+    df.columns = ["Nama Juri", "ID Poster", "Tajuk Poster", "Link Poster"]
     return df
 
 try:
@@ -36,6 +36,7 @@ nama_juri_pilihan = st.sidebar.selectbox("Pilih Nama Juri", senarai_juri)
 
 id_poster_pilihan = None
 tajuk_poster = ""
+link_poster = ""
 
 if nama_juri_pilihan != "-- Pilih Nama Juri --":
     df_juri_poster = df_agihan[df_agihan["Nama Juri"] == nama_juri_pilihan]
@@ -44,28 +45,59 @@ if nama_juri_pilihan != "-- Pilih Nama Juri --":
     senarai_poster = ["-- Pilih ID Poster --"] + list(df_juri_poster["ID Poster"].astype(str).unique())
     id_poster_pilihan = st.sidebar.selectbox("Pilih ID / Kod Poster", senarai_poster)
     
-    # Papar Tajuk Poster
+    # Papar Tajuk & Pautan Poster
     if id_poster_pilihan and id_poster_pilihan != "-- Pilih ID Poster --":
-        match_tajuk = df_juri_poster[df_juri_poster["ID Poster"] == id_poster_pilihan]["Tajuk Poster"].values
-        if len(match_tajuk) > 0:
-            tajuk_poster = match_tajuk[0]
+        row_poster = df_juri_poster[df_juri_poster["ID Poster"] == id_poster_pilihan]
+        if not row_poster.empty:
+            tajuk_poster = row_poster["Tajuk Poster"].values[0]
+            link_poster = row_poster["Link Poster"].values[0] if pd.notna(row_poster["Link Poster"].values[0]) else ""
+            
             st.sidebar.markdown(f"**Tajuk / Institusi:**\n\n*{tajuk_poster}*")
+            
+            if link_poster:
+                st.sidebar.markdown("---")
+                st.sidebar.link_button("📂 Buka / Lihat Poster", str(link_poster), use_container_width=True)
 
-# 5. Rubrik Pemarkahan (13 Kriteria - Susunan Baharu)
+# 5. Rubrik Pemarkahan Lengkap (Kriteria, Markah Maksimum & Aspek yang Dinilai)
 rubrik = [
-    ("1. Tajuk, Nama Penulis dan Institusi", 3),
-    ("2. Abstrak", 8),
-    ("3. Latar Belakang Kajian", 7),
-    ("4. Objektif Kajian", 7),
-    ("5. Intervensi Kajian", 8),
-    ("6. Metodologi Kajian", 8),
-    ("7. Dapatan Kajian dan Bukti", 15),
-    ("8. Perubahan yang Diperhatikan dan Refleksi", 6),
-    ("9. Kesimpulan dan Cadangan", 5),
-    ("10. Kesinambungan dan Keselarasan Kajian", 20),
-    ("11. Rujukan", 4),
-    ("12. Pematuhan Format dan Kelengkapan Kandungan Poster", 5),
-    ("13. Kreativiti dan Reka Bentuk Visual", 4)
+    ("1. Tajuk, Nama Penulis dan Institusi", 3, 
+     "• Tajuk jelas dan tepat menggambarkan fokus kajian (0-1)\n• Nama dan institusi penulis lengkap dinyatakan (0-1)\n• Maklumat penulis disediakan (0-1)"),
+    
+    ("2. Abstrak", 8, 
+     "• Masalah kajian jelas dan spesifik (0-1)\n• Objektif kajian dirumus dengan tepat (0-1)\n• Maklumat peserta diberi dengan lengkap (0-1)\n• Intervensi diterangkan dengan jelas (0-1)\n• Kaedah pengumpulan data sesuai dan jelas (0-1)\n• Dapatan disokong oleh bukti jelas (0-2)\n• Kesimpulan berasaskan dapatan kajian (0-1)"),
+    
+    ("3. Latar Belakang Kajian", 7, 
+     "• Latar belakang kajian diterangkan lengkap (0-2)\n• Masalah dijelaskan dengan mendalam (0-2)\n• Bukti awal masalah dikemukakan jelas (0-2)\n• Rasional kajian difahami dengan baik (0-1)"),
+    
+    ("4. Objektif Kajian", 7, 
+     "• Objektif umum jelas dan berkaitan dengan masalah (0-2)\n• Objektif khusus jelas dan boleh diukur (0-3)\n• Objektif realistik dan boleh dicapai melalui intervensi (0-2)"),
+    
+    ("5. Intervensi Kajian", 8, 
+     "• Masalah dikenal pasti dengan jelas (0-1)\n• Perancangan intervensi teratur (0-2)\n• Intervensi dilaksanakan dengan sistematik (0-2)\n• Pelaksanaan dipantau dengan rapi (0-1)\n• Keberkesanan intervensi dinilai (0-2)"),
+    
+    ("6. Metodologi Kajian", 8, 
+     "• Penerangan peserta atau kumpulan sasaran lengkap (0-2)\n• Tempoh pelaksanaan jelas (0-1)\n• Instrumen sesuai untuk kajian (0-2)\n• Kaedah pengumpulan data jelas dan tepat (0-1)\n• Analisis data sesuai dan jelas (0-2)"),
+    
+    ("7. Dapatan Kajian dan Bukti", 15, 
+     "• Dapatan sesuai dengan objektif (0-3)\n• Data perbandingan jelas (0-3)\n• Perubahan dianalisis dengan tepat (0-3)\n• Visual data tepat dan jelas (0-2)\n• Tafsiran dibuat berdasarkan bukti (0-2)\n• Keberkesanan dibincang dengan baik (0-2)"),
+    
+    ("8. Perubahan yang Diperhatikan dan Refleksi", 6, 
+     "• Perubahan peserta diterangkan (0-2)\n• Aspek berjaya dan cabaran dibincang (0-2)\n• Cadangan diperoleh dari refleksi (0-2)"),
+    
+    ("9. Kesimpulan dan Cadangan", 5, 
+     "• Kesimpulan tepat berdasarkan dapatan (0-2)\n• Cadangan boleh dilaksanakan (0-2)\n• Potensi intervensi dijelaskan (0-1)"),
+    
+    ("10. Kesinambungan dan Keselarasan Kajian", 20, 
+     "• Hubungan masalah dengan objektif jelas (0-4)\n• Intervensi sesuai dengan objektif (0-4)\n• Metodologi dan instrumen sesuai dengan objektif (0-4)\n• Dapatan lengkap serta disokong bukti (0-5)\n• Kesimpulan tepat dari dapatan (0-3)"),
+    
+    ("11. Rujukan", 4, 
+     "• Rujukan relevan dengan kajian (0-2)\n• Format APA edisi ke-7 dipatuhi (0-1)\n• Petikan dan rujukan konsisten (0-1)"),
+    
+    ("12. Pematuhan Format dan Kelengkapan Kandungan Poster", 5, 
+     "• Semua bahagian wajib dalam template lengkap (0-3)\n• Susunan kandungan mengikut struktur template (0-1)\n• Mematuhi format dan keperluan teknikal (0-1)"),
+    
+    ("13. Kreativiti dan Reka Bentuk Visual", 4, 
+     "• Susun atur kemas dan teratur (0-1)\n• Teks mudah dibaca dan tiada tipografi (0-1)\n• Warna, grafik dan visual yang sesuai (0-1)\n• Maklumat disampaikan dengan jelas (0-1)")
 ]
 
 # 6. Borang Pemarkahan Juri
@@ -76,28 +108,35 @@ if not nama_juri_pilihan or nama_juri_pilihan == "-- Pilih Nama Juri --" or not 
 else:
     st.success(f"📌 **Menjuri:** {id_poster_pilihan} | **Juri:** {nama_juri_pilihan}")
     
+    # Pautan Poster di kawasan utama jika ada
+    if link_poster:
+        st.link_button(f"🔗 Klik Di Sini Untuk Membuka Poster {id_poster_pilihan}", str(link_poster), type="primary")
+
+    # Makluman mengenai pemarkahan nombor perpuluhan
+    st.warning("💡 **Peringatan Pemarkahan:** Anda dibenarkan memasukkan markah dalam bentuk **nombor perpuluhan** (contoh: `0.5`, `1.25`, `2.5`). Sila taip terus markah pada ruangan input di sebelah kanan.")
+
     with st.form("borang_penjurian"):
         total_score = 0.0
 
-        col_k, col_m = st.columns([3, 1])
-        col_k.markdown("**Kriteria Pemarkahan**")
-        col_m.markdown("**Markah Juri**")
-        st.markdown("---")
-
-        for kriteria, max_mark in rubrik:
+        for kriteria, max_mark, aspek in rubrik:
             c1, c2 = st.columns([3, 1])
-            c1.write(f"**{kriteria}** *(Maks: {max_mark})*")
-            score = c2.number_input(
-                label=f"Markah {kriteria}",
-                min_value=0.0,
-                max_value=float(max_mark),
-                step=0.5,
-                key=f"{id_poster_pilihan}_{kriteria}",
-                label_visibility="collapsed"
-            )
-            total_score += score
-
-        st.markdown("---")
+            
+            with c1:
+                st.markdown(f"### {kriteria} *(Maks: {max_mark})*")
+                st.caption(aspek) # Memaparkan Aspek yang Dinilai di bawah kriteria
+                
+            with c2:
+                score = st.number_input(
+                    label=f"Markah {kriteria}",
+                    min_value=0.0,
+                    max_value=float(max_mark),
+                    step=0.25, # Membolehkan kenaikan nombor perpuluhan secara fleksibel
+                    key=f"{id_poster_pilihan}_{kriteria}",
+                    label_visibility="collapsed"
+                )
+                total_score += score
+            
+            st.markdown("---")
 
         if total_score >= 85:
             pingat = "GOLD"
@@ -109,7 +148,7 @@ else:
             pingat = "BRONZE"
             badge = "🥉 BRONZE"
 
-        st.metric(label="Jumlah Markah Keseluruhan (100)", value=f"{total_score} / 100")
+        st.metric(label="Jumlah Markah Keseluruhan (100)", value=f"{total_score:.2f} / 100")
         st.subheader(f"Keputusan Pingat: {badge}")
 
         submitted = st.form_submit_button("Hantar & Semak Keputusan", use_container_width=True)
@@ -117,4 +156,4 @@ else:
         if submitted:
             st.balloons()
             st.success(f"✅ Keputusan penjurian bagi **{id_poster_pilihan}** disahkan!")
-            st.write(f"**Ringkasan Data:** Juri: {nama_juri_pilihan} | ID: {id_poster_pilihan} | Markah: {total_score} | Pingat: {pingat}")
+            st.write(f"**Ringkasan Data:** Juri: {nama_juri_pilihan} | ID: {id_poster_pilihan} | Markah: {total_score:.2f} | Pingat: {pingat}")
