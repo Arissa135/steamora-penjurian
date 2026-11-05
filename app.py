@@ -13,8 +13,10 @@ st.markdown("---")
 conn = st.connection("gsheets", type=GSheetsConnection)
 
 # 2. Muat Turun Data Agihan Juri dari Google Sheets
+# Muat Turun Data Agihan Juri dari Google Sheets (Secara Spesifik)
 try:
-    df_agihan = conn.read(worksheet="Agihan", ttl=10)
+    df_agihan = conn.read(worksheet="Agihan", usecols=[0, 1, 2], ttl=10)
+    df_agihan.dropna(how="all", inplace=True) # Buang baris kosong jika ada
 except Exception as e:
     st.error(f"⚠️ Ralat membaca helaian 'Agihan': {e}")
     st.stop()
