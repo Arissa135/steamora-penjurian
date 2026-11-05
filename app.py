@@ -112,8 +112,12 @@ else:
     if link_poster:
         st.link_button(f"🔗 Klik Di Sini Untuk Membuka Poster {id_poster_pilihan}", str(link_poster), type="primary")
 
-    # Makluman Pemarkahan Perpuluhan (Ayat DiberSIHKAN)
-    st.warning("💡 **Peringatan Pemarkahan:** Markah dalam bentuk **nombor perpuluhan** (contoh: `0.3`, `1.27`, `2.5`) dibenarkan. Anda boleh **menaip terus markah** pada ruangan input atau menggunakan **butang `+` / `-`** (selang `0.25` markah bagi setiap klik).")
+    # Makluman Pemarkahan Perpuluhan & Skala Skor Baharu
+    st.warning("""
+💡 **Peringatan Pemarkahan:** Markah dalam bentuk **nombor perpuluhan** (contoh: `0.3`, `1.27`, `2.5`) dibenarkan. Anda boleh **menaip terus markah** pada ruangan input atau menggunakan **butang `+` / `-`** (selang `0.25` markah bagi setiap klik).
+
+📌 **Skala Pemarkahan:** `skor minimum, 0 = sangat tidak setuju |<---------->| skor maksimum = sangat setuju`
+""")
 
     with st.form("borang_penjurian"):
         total_score = 0.0
