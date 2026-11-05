@@ -163,3 +163,11 @@ else:
             st.balloons()
             st.success(f"✅ Keputusan penjurian bagi **{id_poster_pilihan}** disahkan!")
             st.write(f"**Ringkasan Data:** Juri: {nama_juri_pilihan} | ID: {id_poster_pilihan} | Markah: {total_score:.2f} | Pingat: {pingat}")
+# 7. Bahagian Kredit / Footer
+st.markdown("---")
+st.markdown("""
+<div style="text-align: center; color: #666666; font-size: 13px; padding: 20px 0;">
+    ©️ 2026 | <b>JABATAN MATEMATIK, FAKULTI SAINS DAN MATEMATIK, UNIVERSITI PENDIDIKAN SULTAN IDRIS</b><br>
+    Sistem Penjurian STEAMORA 2026 | Dr. Zamzana binti Zamzamir | Arissa Syaralia binti Ariff Murzali
+</div>
+""", unsafe_allow_html=True)
