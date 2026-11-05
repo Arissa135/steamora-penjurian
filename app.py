@@ -4,7 +4,7 @@ import pandas as pd
 # 1. Konfigurasi Halaman Web
 st.set_page_config(page_title="Penjurian Poster STEAMORA 2026", layout="wide", page_icon="🏆")
 
-st.title("🏆 SISTEM PENILAIAN JURI POSTER KAJIAN TINDAKAN STEAMORA 2026")
+st.title("🏆 Platform Penjurian Poster Kajian Tindakan STEAMORA 2026")
 st.write("Sila pilih nama anda di bar sampingan (sidebar) untuk memulakan pemarkahan.")
 st.markdown("---")
 
@@ -12,7 +12,7 @@ st.markdown("---")
 SHEET_ID = "1sfwaqs4owcMfzf5f99d0YcuVS4AZNgQ99Pbh72m0obA"
 URL_AGIHAN = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Agihan"
 
-# 3. Baca Data Agihan Juri (Termasuk Lajur Link Poster)
+# 3. Baca Data Agihan Juri
 @st.cache_data(ttl=5)
 def load_data_agihan():
     df = pd.read_csv(URL_AGIHAN)
@@ -27,10 +27,10 @@ except Exception as e:
     st.info("Pastikan tetapan Google Sheets disetkan kepada 'Anyone with the link can view/edit'.")
     st.stop()
 
-# 4. Kawasan Sidebar (Drop-down Dinamik)
+# 4. Kawasan Sidebar (Drop-down Dinamik Mengikut Urutan Asal GSheets)
 st.sidebar.header("📋 Maklumat Penjurian")
 
-# Drop-down 1: Pilih Nama Juri (Mengikut urutan asal dari atas ke bawah di Google Sheets)
+# Drop-down 1: Pilih Nama Juri
 senarai_juri = ["-- Pilih Nama Juri --"] + list(df_agihan["Nama Juri"].astype(str).unique())
 nama_juri_pilihan = st.sidebar.selectbox("Pilih Nama Juri", senarai_juri)
 
@@ -41,7 +41,7 @@ link_poster = ""
 if nama_juri_pilihan != "-- Pilih Nama Juri --":
     df_juri_poster = df_agihan[df_agihan["Nama Juri"] == nama_juri_pilihan]
     
-    # Drop-down 2: Pilih ID Poster milik Juri (Juga mengikut urutan asal dari atas ke bawah)
+    # Drop-down 2: Pilih ID Poster milik Juri
     senarai_poster = ["-- Pilih ID Poster --"] + list(df_juri_poster["ID Poster"].astype(str).unique())
     id_poster_pilihan = st.sidebar.selectbox("Pilih ID / Kod Poster", senarai_poster)
     
@@ -58,7 +58,7 @@ if nama_juri_pilihan != "-- Pilih Nama Juri --":
                 st.sidebar.markdown("---")
                 st.sidebar.link_button("📂 Buka / Lihat Poster", str(link_poster), use_container_width=True)
 
-# 5. Rubrik Pemarkahan Lengkap (Point Form Ke Bawah)
+# 5. Rubrik Pemarkahan Lengkap (Format [Skor X-Y])
 rubrik = [
     ("1. Tajuk, Nama Penulis dan Institusi", 3, 
      "* Tajuk jelas dan tepat menggambarkan fokus kajian. [Skor 0-1]\n* Nama dan institusi penulis lengkap dinyatakan. [Skor 0-1]\n* Maklumat penulis disediakan. [Skor 0-1]"),
@@ -112,7 +112,7 @@ else:
     if link_poster:
         st.link_button(f"🔗 Klik Di Sini Untuk Membuka Poster {id_poster_pilihan}", str(link_poster), type="primary")
 
-# Makluman Pemarkahan Perpuluhan & Skala Skor (Selari Dengan Hanging Indent)
+    # Makluman Pemarkahan Perpuluhan & Skala Skor (Selari Dengan Hanging Indent)
     st.markdown("""
     <div style="background-color: #FFF9E6; border-left: 5px solid #FFA500; padding: 15px; border-radius: 5px; color: #000000; margin-bottom: 20px;">
         <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
@@ -175,6 +175,7 @@ else:
             st.balloons()
             st.success(f"✅ Keputusan penjurian bagi **{id_poster_pilihan}** disahkan!")
             st.write(f"**Ringkasan Data:** Juri: {nama_juri_pilihan} | ID: {id_poster_pilihan} | Markah: {total_score:.2f} | Pingat: {pingat}")
+
 # 7. Bahagian Kredit / Footer
 st.markdown("---")
 st.markdown("""
