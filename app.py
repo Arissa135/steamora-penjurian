@@ -13,8 +13,6 @@ st.markdown("---")
 # 2. Pautan CSV & Google Apps Script
 SHEET_ID = "1sfwaqs4owcMfzf5f99d0YcuVS4AZNgQ99Pbh72m0obA"
 URL_AGIHAN = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Agihan"
-
-# URL Google Apps Script Web App Anda
 WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxHD0zYXoEbqgJohzLiXpX36FcEaRJyN-pUMq6p5Ieos2rXYUaQnWSkxWPnzv6sL4w5/exec"
 
 # 3. Baca Data Agihan Juri
@@ -59,46 +57,140 @@ if nama_juri_pilihan != "-- Pilih Nama Juri --":
                 st.sidebar.markdown("---")
                 st.sidebar.link_button("📂 Buka / Lihat Poster", str(link_poster), use_container_width=True)
 
-# 5. Rubrik Pemarkahan Lengkap
-rubrik = [
-    ("1. Tajuk, Nama Penulis dan Institusi", 3, 
-     "* Tajuk jelas dan tepat menggambarkan fokus kajian. [Skor 0-1]\n* Nama dan institusi penulis lengkap dinyatakan. [Skor 0-1]\n* Maklumat penulis disediakan. [Skor 0-1]"),
-    
-    ("2. Abstrak", 8, 
-     "* Masalah kajian jelas dan spesifik. [Skor 0-1]\n* Objektif kajian dirumus dengan tepat. [Skor 0-1]\n* Maklumat peserta diberi dengan lengkap. [Skor 0-1]\n* Intervensi diterangkan dengan jelas. [Skor 0-1]\n* Kaedah pengumpulan data sesuai dan jelas. [Skor 0-1]\n* Dapatan disokong oleh bukti jelas. [Skor 0-2]\n* Kesimpulan berasaskan dapatan kajian. [Skor 0-1]"),
-    
-    ("3. Latar Belakang Kajian", 7, 
-     "* Latar belakang kajian diterangkan lengkap. [Skor 0-2]\n* Masalah dijelaskan dengan mendalam. [Skor 0-2]\n* Bukti awal masalah dikemukakan jelas. [Skor 0-2]\n* Rasional kajian difahami dengan baik. [Skor 0-1]"),
-    
-    ("4. Objektif Kajian", 7, 
-     "* Objektif umum jelas dan berkaitan dengan masalah. [Skor 0-2]\n* Objektif khusus jelas dan boleh diukur. [Skor 0-3]\n* Objektif realistik dan boleh dicapai melalui intervensi. [Skor 0-2]"),
-    
-    ("5. Intervensi Kajian", 8, 
-     "* Masalah dikenal pasti dengan jelas. [Skor 0-1]\n* Perancangan intervensi teratur. [Skor 0-2]\n* Intervensi dilaksanakan dengan sistematik. [Skor 0-2]\n* Pelaksanaan dipantau dengan rapi. [Skor 0-1]\n* Keberkesanan intervensi dinilai. [Skor 0-2]"),
-    
-    ("6. Metodologi Kajian", 8, 
-     "* Penerangan peserta atau kumpulan sasaran lengkap. [Skor 0-2]\n* Tempoh pelaksanaan jelas. [Skor 0-1]\n* Instrumen sesuai untuk kajian. [Skor 0-2]\n* Kaedah pengumpulan data jelas dan tepat. [Skor 0-1]\n* Analisis data sesuai dan jelas. [Skor 0-2]"),
-    
-    ("7. Dapatan Kajian dan Bukti", 15, 
-     "* Dapatan sesuai dengan objektif. [Skor 0-3]\n* Data perbandingan jelas. [Skor 0-3]\n* Perubahan dianalisis dengan tepat. [Skor 0-3]\n* Visual data tepat dan jelas. [Skor 0-2]\n* Tafsiran dibuat berdasarkan bukti. [Skor 0-2]\n* Keberkesanan dibincang dengan baik. [Skor 0-2]"),
-    
-    ("8. Perubahan yang Diperhatikan dan Refleksi", 6, 
-     "* Perubahan peserta diterangkan. [Skor 0-2]\n* Aspek berjaya dan cabaran dibincang. [Skor 0-2]\n* Cadangan diperoleh dari refleksi. [Skor 0-2]"),
-    
-    ("9. Kesimpulan dan Cadangan", 5, 
-     "* Kesimpulan tepat berdasarkan dapatan. [Skor 0-2]\n* Cadangan boleh dilaksanakan. [Skor 0-2]\n* Potensi intervensi dijelaskan. [Skor 0-1]"),
-    
-    ("10. Kesinambungan dan Keselarasan Kajian", 20, 
-     "* Hubungan masalah dengan objektif jelas. [Skor 0-4]\n* Intervensi sesuai dengan objektif. [Skor 0-4]\n* Metodologi dan instrumen sesuai dengan objektif. [Skor 0-4]\n* Dapatan lengkap serta disokong bukti. [Skor 0-5]\n* Kesimpulan tepat dari dapatan. [Skor 0-3]"),
-    
-    ("11. Rujukan", 4, 
-     "* Rujukan relevan dengan kajian. [Skor 0-2]\n* Format APA edisi ke-7 dipatuhi. [Skor 0-1]\n* Petikan dan rujukan konsisten. [Skor 0-1]"),
-    
-    ("12. Pematuhan Format dan Kelengkapan Kandungan Poster", 5, 
-     "* Semua bahagian wajib dalam template lengkap. [Skor 0-3]\n* Susunan kandungan mengikut struktur template. [Skor 0-1]\n* Mematuhi format dan keperluan teknikal. [Skor 0-1]"),
-    
-    ("13. Kreativiti dan Reka Bentuk Visual", 4, 
-     "* Susun atur kemas dan teratur. [Skor 0-1]\n* Teks mudah dibaca dan tiada tipografi. [Skor 0-1]\n* Warna, grafik dan visual yang sesuai. [Skor 0-1]\n* Maklumat disampaikan dengan jelas. [Skor 0-1]")
+# 5. Struktur Rubrik Berdasarkan Aspek yang Dinilai
+rubrik_detail = [
+    {
+        "kriteria": "1. Tajuk, Nama Penulis dan Institusi",
+        "max_kriteria": 3,
+        "aspek": [
+            ("Tajuk jelas dan tepat menggambarkan fokus kajian.", 1.0),
+            ("Nama dan institusi penulis lengkap dinyatakan.", 1.0),
+            ("Maklumat penulis disediakan.", 1.0)
+        ]
+    },
+    {
+        "kriteria": "2. Abstrak",
+        "max_kriteria": 8,
+        "aspek": [
+            ("Masalah kajian jelas dan spesifik.", 1.0),
+            ("Objektif kajian dirumus dengan tepat.", 1.0),
+            ("Maklumat peserta diberi dengan lengkap.", 1.0),
+            ("Intervensi diterangkan dengan jelas.", 1.0),
+            ("Kaedah pengumpulan data sesuai dan jelas.", 1.0),
+            ("Dapatan disokong oleh bukti jelas.", 2.0),
+            ("Kesimpulan berasaskan dapatan kajian.", 1.0)
+        ]
+    },
+    {
+        "kriteria": "3. Latar Belakang Kajian",
+        "max_kriteria": 7,
+        "aspek": [
+            ("Latar belakang kajian diterangkan lengkap.", 2.0),
+            ("Masalah dijelaskan dengan mendalam.", 2.0),
+            ("Bukti awal masalah dikemukakan jelas.", 2.0),
+            ("Rasional kajian difahami dengan baik.", 1.0)
+        ]
+    },
+    {
+        "kriteria": "4. Objektif Kajian",
+        "max_kriteria": 7,
+        "aspek": [
+            ("Objektif umum jelas dan berkaitan dengan masalah.", 2.0),
+            ("Objektif khusus jelas dan boleh diukur.", 3.0),
+            ("Objektif realistik dan boleh dicapai melalui intervensi.", 2.0)
+        ]
+    },
+    {
+        "kriteria": "5. Intervensi Kajian",
+        "max_kriteria": 8,
+        "aspek": [
+            ("Masalah dikenal pasti dengan jelas.", 1.0),
+            ("Perancangan intervensi teratur.", 2.0),
+            ("Intervensi dilaksanakan dengan sistematik.", 2.0),
+            ("Pelaksanaan dipantau dengan rapi.", 1.0),
+            ("Keberkesanan intervensi dinilai.", 2.0)
+        ]
+    },
+    {
+        "kriteria": "6. Metodologi Kajian",
+        "max_kriteria": 8,
+        "aspek": [
+            ("Penerangan peserta atau kumpulan sasaran lengkap.", 2.0),
+            ("Tempoh pelaksanaan jelas.", 1.0),
+            ("Instrumen sesuai untuk kajian.", 2.0),
+            ("Kaedah pengumpulan data jelas dan tepat.", 1.0),
+            ("Analisis data sesuai dan jelas.", 2.0)
+        ]
+    },
+    {
+        "kriteria": "7. Dapatan Kajian dan Bukti",
+        "max_kriteria": 15,
+        "aspek": [
+            ("Dapatan sesuai dengan objektif.", 3.0),
+            ("Data perbandingan jelas.", 3.0),
+            ("Perubahan dianalisis dengan tepat.", 3.0),
+            ("Visual data tepat dan jelas.", 2.0),
+            ("Tafsiran dibuat berdasarkan bukti.", 2.0),
+            ("Keberkesanan dibincang dengan baik.", 2.0)
+        ]
+    },
+    {
+        "kriteria": "8. Perubahan yang Diperhatikan dan Refleksi",
+        "max_kriteria": 6,
+        "aspek": [
+            ("Perubahan peserta diterangkan.", 2.0),
+            ("Aspek berjaya dan cabaran dibincang.", 2.0),
+            ("Cadangan diperoleh dari refleksi.", 2.0)
+        ]
+    },
+    {
+        "kriteria": "9. Kesimpulan dan Cadangan",
+        "max_kriteria": 5,
+        "aspek": [
+            ("Kesimpulan tepat berdasarkan dapatan.", 2.0),
+            ("Cadangan boleh dilaksanakan.", 2.0),
+            ("Potensi intervensi dijelaskan.", 1.0)
+        ]
+    },
+    {
+        "kriteria": "10. Kesinambungan dan Keselarasan Kajian",
+        "max_kriteria": 20,
+        "aspek": [
+            ("Hubungan masalah dengan objektif jelas.", 4.0),
+            ("Intervensi sesuai dengan objektif.", 4.0),
+            ("Metodologi dan instrumen sesuai dengan objektif.", 4.0),
+            ("Dapatan lengkap serta disokong bukti.", 5.0),
+            ("Kesimpulan tepat dari dapatan.", 3.0)
+        ]
+    },
+    {
+        "kriteria": "11. Rujukan",
+        "max_kriteria": 4,
+        "aspek": [
+            ("Rujukan relevan dengan kajian.", 2.0),
+            ("Format APA edisi ke-7 dipatuhi.", 1.0),
+            ("Petikan dan rujukan konsisten.", 1.0)
+        ]
+    },
+    {
+        "kriteria": "12. Pematuhan Format dan Kelengkapan Kandungan Poster",
+        "max_kriteria": 5,
+        "aspek": [
+            ("Semua bahagian wajib dalam template lengkap.", 3.0),
+            ("Susunan kandungan mengikut struktur template.", 1.0),
+            ("Mematuhi format dan keperluan teknikal.", 1.0)
+        ]
+    },
+    {
+        "kriteria": "13. Kreativiti dan Reka Bentuk Visual",
+        "max_kriteria": 4,
+        "aspek": [
+            ("Susun atur kemas dan teratur.", 1.0),
+            ("Teks mudah dibaca dan tiada tipografi.", 1.0),
+            ("Warna, grafik dan visual yang sesuai.", 1.0),
+            ("Maklumat disampaikan dengan jelas.", 1.0)
+        ]
+    }
 ]
 
 # 6. Borang Pemarkahan Juri
@@ -117,13 +209,13 @@ else:
         <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
             <div style="margin-right: 8px; font-size: 16px; line-height: 1.4;">💡</div>
             <div style="color: #000000; line-height: 1.4;">
-                <b>Peringatan Pemarkahan:</b> Markah dalam bentuk <b>nombor perpuluhan</b> (contoh: <code>0.3</code>, <code>1.27</code>, <code>2.5</code>) dibenarkan. Anda boleh <b>menaip terus markah</b> pada ruangan input atau menggunakan <b>butang + / -</b> (selang <code>0.25</code> markah bagi setiap klik).
+                <b>Peringatan Pemarkahan:</b> Anda boleh <b>menaip terus markah</b> pada ruangan input mengikut aspek yang dinilai. Markah dalam bentuk <b>nombor perpuluhan</b> dibenarkan.
             </div>
         </div>
         <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
             <div style="margin-right: 8px; font-size: 16px; line-height: 1.4;">💡</div>
             <div style="color: #000000; line-height: 1.4;">
-                Sekiranya penilaian dihantar <b>lebih daripada sekali</b> oleh juri yang sama bagi poster yang sama, hanya penilaian <b>TERKINI</b> akan diambil kira dalam pengiraan markah.
+                Sekiranya penilaian dihantar <b>lebih daripada sekali</b> oleh juri yang sama bagi poster yang sama, hanya penilaian <b>TERKINI</b> akan diambil kira.
             </div>
         </div>
         <div style="padding-left: 26px; color: #000000; line-height: 1.4;">
@@ -132,29 +224,37 @@ else:
     </div>
     """, unsafe_allow_html=True)
 
+    # Menggunakan Form supaya tiada arahan "Press Enter to Submit" di setiap input
     with st.form("borang_penjurian"):
+        kriteria_scores = []
         total_score = 0.0
-        scores_list = []
 
-        for idx, (kriteria, max_mark, aspek) in enumerate(rubrik, 1):
-            c1, c2 = st.columns([3, 1])
+        for k_idx, item in enumerate(rubrik_detail, 1):
+            st.markdown(f"### {item['kriteria']} *(Maks: {item['max_kriteria']})*")
             
-            with c1:
-                st.markdown(f"#### {kriteria} *(Maks: {max_mark})*")
-                st.markdown(aspek)
-                
-            with c2:
-                score = st.number_input(
-                    label=f"Markah {kriteria}",
-                    min_value=0.0,
-                    max_value=float(max_mark),
-                    step=0.25,
-                    key=f"{id_poster_pilihan}_{kriteria}",
-                    label_visibility="collapsed"
-                )
-                total_score += score
-                scores_list.append(score)
+            sub_score_total = 0.0
             
+            # Memaparkan input markah bagi setiap aspek pecahan
+            for a_idx, (aspek_text, max_aspek) in enumerate(item["aspek"], 1):
+                col_text, col_input = st.columns([3, 1])
+                with col_text:
+                    st.write(f"• {aspek_text} **[Skor 0-{int(max_aspek) if max_aspek.is_integer() else max_aspek}]**")
+                with col_input:
+                    val = st.number_input(
+                        label=f"{item['kriteria']}_a{a_idx}",
+                        min_value=0.0,
+                        max_value=float(max_aspek),
+                        step=0.1,
+                        key=f"{id_poster_pilihan}_k{k_idx}_a{a_idx}",
+                        label_visibility="collapsed"
+                    )
+                    sub_score_total += val
+            
+            # Jumlah terkumpul bagi kriteria ini
+            kriteria_scores.append(sub_score_total)
+            total_score += sub_score_total
+            
+            st.info(f"📊 **Jumlah Markah bagi {item['kriteria']}:** {sub_score_total:.2f} / {item['max_kriteria']}")
             st.markdown("---")
 
         if total_score >= 85:
@@ -170,6 +270,7 @@ else:
         st.metric(label="Jumlah Markah Keseluruhan (100)", value=f"{total_score:.2f} / 100")
         st.subheader(f"Keputusan Pingat: {badge}")
 
+        # HANYA SATU BUTANG HANTAR DI HUJUNG
         submitted = st.form_submit_button("Hantar & Simpan Keputusan", use_container_width=True)
 
         if submitted:
@@ -180,8 +281,9 @@ else:
                 "total_score": round(total_score, 2),
                 "pingat": pingat
             }
+            # Memasukkan markah bagi setiap 13 kriteria ke dalam rekod
             for i in range(13):
-                payload[f"k{i+1}"] = scores_list[i]
+                payload[f"k{i+1}"] = round(kriteria_scores[i], 2)
 
             try:
                 res = requests.post(WEB_APP_URL, json=payload)
