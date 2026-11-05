@@ -112,12 +112,24 @@ else:
     if link_poster:
         st.link_button(f"🔗 Klik Di Sini Untuk Membuka Poster {id_poster_pilihan}", str(link_poster), type="primary")
 
-# Makluman Pemarkahan Perpuluhan & Skala Skor (Rapat Ke Kiri & Teks Hitam)
+# Makluman Pemarkahan Perpuluhan & Skala Skor (Selari Dengan Hanging Indent)
     st.markdown("""
     <div style="background-color: #FFF9E6; border-left: 5px solid #FFA500; padding: 15px; border-radius: 5px; color: #000000; margin-bottom: 20px;">
-        <p style="margin: 0 0 10px 0; color: #000000;">💡 <b>Peringatan Pemarkahan:</b> Markah dalam bentuk <b>nombor perpuluhan</b> (contoh: <code>0.3</code>, <code>1.27</code>, <code>2.5</code>) dibenarkan. Anda boleh <b>menaip terus markah</b> pada ruangan input atau menggunakan <b>butang + / -</b> (selang <code>0.25</code> markah bagi setiap klik).</p>
-        <p style="margin: 0 0 10px 0; color: #000000;">💡 Sekiranya penilaian dihantar <b>lebih daripada sekali</b> oleh juri yang sama bagi poster yang sama, hanya penilaian <b>TERKINI</b> akan diambil kira dalam pengiraan markah.</p>
-        <p style="margin: 0; color: #000000;"><b>Skala Pemarkahan:</b> Skor Minimum, 0 = Sangat Tidak Setuju |&lt;----------&gt;| Skor Maksimum = Sangat Setuju</p>
+        <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+            <div style="margin-right: 8px; font-size: 16px; line-height: 1.4;">💡</div>
+            <div style="color: #000000; line-height: 1.4;">
+                <b>Peringatan Pemarkahan:</b> Markah dalam bentuk <b>nombor perpuluhan</b> (contoh: <code>0.3</code>, <code>1.27</code>, <code>2.5</code>) dibenarkan. Anda boleh <b>menaip terus markah</b> pada ruangan input atau menggunakan <b>butang + / -</b> (selang <code>0.25</code> markah bagi setiap klik).
+            </div>
+        </div>
+        <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+            <div style="margin-right: 8px; font-size: 16px; line-height: 1.4;">💡</div>
+            <div style="color: #000000; line-height: 1.4;">
+                Sekiranya penilaian dihantar <b>lebih daripada sekali</b> oleh juri yang sama bagi poster yang sama, hanya penilaian <b>TERKINI</b> akan diambil kira dalam pengiraan markah.
+            </div>
+        </div>
+        <div style="padding-left: 26px; color: #000000; line-height: 1.4;">
+            <b>Skala Pemarkahan:</b> Skor Minimum, 0 = Sangat Tidak Setuju |&lt;----------&gt;| Skor Maksimum = Sangat Setuju
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
