@@ -6,7 +6,7 @@ from datetime import datetime
 # 1. Konfigurasi Halaman Web
 st.set_page_config(page_title="Penjurian Poster STEAMORA 2026", layout="wide", page_icon="🏆")
 
-st.title("🏆 Platform Penjurian Poster Kajian Tindakan STEAMORA 2026")
+st.title("🏆 Sistem Penjurian Poster Kajian Tindakan STEAMORA 2026")
 st.write("Sila pilih nama anda di bar sampingan (sidebar) untuk memulakan pemarkahan.")
 st.markdown("---")
 
@@ -255,18 +255,8 @@ else:
         st.info(f"📊 **Jumlah Markah bagi {item['kriteria']}:** {sub_score_total:.2f} / {item['max_kriteria']}")
         st.markdown("---")
 
-    if total_score >= 85:
-        pingat = "GOLD"
-        badge = "🥇 GOLD"
-    elif total_score >= 70:
-        pingat = "SILVER"
-        badge = "🥈 SILVER"
-    else:
-        pingat = "BRONZE"
-        badge = "🥉 BRONZE"
-
-    st.metric(label="Jumlah Markah Keseluruhan (100)", value=f"{total_score:.2f} / 100")
-    st.subheader(f"Keputusan Pingat: {badge}")
+    # PAPARAN JUMLAH MARKAH JURI SAHAJA (TANPA PINGAT)
+    st.metric(label="Jumlah Markah Penjurian Anda (100)", value=f"{total_score:.2f} / 100")
 
     if st.button("Hantar & Simpan Keputusan", type="primary", use_container_width=True):
         payload = {
@@ -274,7 +264,7 @@ else:
             "nama_juri": nama_juri_pilihan,
             "id_poster": id_poster_pilihan,
             "total_score": round(total_score, 2),
-            "pingat": pingat,
+            "pingat": "-", # Dikosongkan / Tidak dikira pada tahap ini
             "aspek_scores": aspek_scores
         }
         for i in range(13):
@@ -284,8 +274,8 @@ else:
             res = requests.post(WEB_APP_URL, json=payload)
             if res.status_code == 200:
                 st.balloons()
-                st.success(f"✅ Keputusan penjurian bagi **{id_poster_pilihan}** BERJAYA DISIMPAN ke Google Sheets (`Rekap`)!")
-                st.write(f"**Ringkasan:** Juri: {nama_juri_pilihan} | ID: {id_poster_pilihan} | Markah: {total_score:.2f} | Pingat: {pingat}")
+                st.success(f"✅ Keputusan penjurian bagi **{id_poster_pilihan}** BERJAYA DISIMPAN!")
+                st.write(f"**Ringkasan:** Juri: {nama_juri_pilihan} | ID Poster: {id_poster_pilihan} | Jumlah Markah Diberi: {total_score:.2f}")
             else:
                 st.error("⚠️ Gagal menyimpan ke Google Sheets. Sila semak pautan Web App Script anda.")
         except Exception as ex:
