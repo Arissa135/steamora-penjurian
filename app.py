@@ -6,7 +6,7 @@ from datetime import datetime
 # 1. Konfigurasi Halaman Web
 st.set_page_config(page_title="Penjurian Poster STEAMORA 2026", layout="wide", page_icon="🏆")
 
-st.title("🏆 Sistem Penjurian Poster Kajian Tindakan STEAMORA 2026")
+st.title("🏆 Platform Penjurian Poster Kajian Tindakan STEAMORA 2026")
 st.write("Sila pilih nama anda di bar sampingan (sidebar) untuk memulakan pemarkahan.")
 st.markdown("---")
 
@@ -51,11 +51,20 @@ if nama_juri_pilihan != "-- Pilih Nama Juri --":
             tajuk_poster = row_poster["Tajuk Poster"].values[0]
             link_poster = row_poster["Link Poster"].values[0] if pd.notna(row_poster["Link Poster"].values[0]) else ""
             
-            st.sidebar.markdown(f"**Tajuk Poster:**\n\n*{tajuk_poster}*")
+            st.sidebar.markdown(f"**Tajuk / Institusi:**\n\n*{tajuk_poster}*")
             
             if link_poster:
                 st.sidebar.markdown("---")
                 st.sidebar.link_button("📂 Buka / Lihat Poster", str(link_poster), use_container_width=True)
+
+# Fungsi Jana Pilihan Skala Diskrit 4 Bahagian (5 Tahap Skor)
+def get_discrete_options(max_val):
+    step = max_val / 4.0
+    options = []
+    for i in range(5):
+        val = round(i * step, 2)
+        options.append(int(val) if val.is_integer() else val)
+    return options
 
 # 5. Struktur Rubrik Berdasarkan Aspek
 rubrik_detail = [
@@ -209,7 +218,7 @@ else:
         <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
             <div style="margin-right: 8px; font-size: 16px; line-height: 1.4;">💡</div>
             <div style="color: #000000; line-height: 1.4;">
-                <b>Peringatan Pemarkahan:</b> Anda boleh <b>menaip terus markah</b> pada ruangan input mengikut aspek yang dinilai. Markah dalam bentuk <b>nombor perpuluhan</b> dibenarkan.
+                <b>Cara Pemarkahan:</b> Sila <b>klik terus pada butang skor</b> (skala diskrit 4 bahagian) bagi setiap aspek yang dinilai. Markah keseluruhan akan dikira secara automatik.
             </div>
         </div>
         <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
@@ -219,7 +228,7 @@ else:
             </div>
         </div>
         <div style="padding-left: 26px; color: #000000; line-height: 1.4;">
-            <b>Skala Pemarkahan:</b> Skor Minimum, 0 = Sangat Tidak Setuju |&lt;----------&gt;| Skor Maksimum = Sangat Setuju
+            <b>Skala Pemarkahan:</b> Skor Minimum, 0 = Sangat Tidak Setuju |<---------->| Skor Maksimum = Sangat Setuju
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -234,20 +243,26 @@ else:
         sub_score_total = 0.0
         
         for a_idx, (aspek_text, max_aspek) in enumerate(item["aspek"], 1):
-            col_text, col_input = st.columns([3, 1])
+            col_text, col_input = st.columns([2.2, 1.8])
+            max_label = int(max_aspek) if max_aspek.is_integer() else max_aspek
+            
             with col_text:
-                st.write(f"• {aspek_text} **[Skor 0-{int(max_aspek) if max_aspek.is_integer() else max_aspek}]**")
+                st.markdown(f"<div style='padding-top: 8px;'>• {aspek_text} <b>[Skor 0-{max_label}]</b></div>", unsafe_allow_html=True)
+            
             with col_input:
-                val = st.number_input(
+                pilihan_skor = get_discrete_options(max_aspek)
+                val = st.pills(
                     label=f"{item['kriteria']}_a{a_idx}",
-                    min_value=0.0,
-                    max_value=float(max_aspek),
-                    step=0.1,
+                    options=pilihan_skor,
+                    default=0,
+                    selection_mode="single",
                     key=f"{id_poster_pilihan}_k{k_idx}_a{a_idx}",
                     label_visibility="collapsed"
                 )
-                sub_score_total += val
-                aspek_scores[f"k{k_idx}_a{a_idx}"] = round(val, 2)
+                # Jika pengguna nyahpilih (None), anggap sebagai 0.0
+                skor_dipilih = float(val) if val is not None else 0.0
+                sub_score_total += skor_dipilih
+                aspek_scores[f"k{k_idx}_a{a_idx}"] = round(skor_dipilih, 2)
         
         kriteria_scores.append(sub_score_total)
         total_score += sub_score_total
@@ -264,7 +279,7 @@ else:
             "nama_juri": nama_juri_pilihan,
             "id_poster": id_poster_pilihan,
             "total_score": round(total_score, 2),
-            "pingat": "-", # Dikosongkan / Tidak dikira pada tahap ini
+            "pingat": "-",
             "aspek_scores": aspek_scores
         }
         for i in range(13):
