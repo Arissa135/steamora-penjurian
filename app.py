@@ -51,7 +51,7 @@ if nama_juri_pilihan != "-- Pilih Nama Juri --":
             tajuk_poster = row_poster["Tajuk Poster"].values[0]
             link_poster = row_poster["Link Poster"].values[0] if pd.notna(row_poster["Link Poster"].values[0]) else ""
             
-            st.sidebar.markdown(f"**Tajuk / Institusi:**\n\n*{tajuk_poster}*")
+            st.sidebar.markdown(f"**Tajuk:**\n\n*{tajuk_poster}*")
             
             if link_poster:
                 st.sidebar.markdown("---")
