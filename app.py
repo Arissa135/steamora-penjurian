@@ -57,13 +57,21 @@ if nama_juri_pilihan != "-- Pilih Nama Juri --":
                 st.sidebar.markdown("---")
                 st.sidebar.link_button("📂 Buka / Lihat Poster", str(link_poster), use_container_width=True)
 
-# Fungsi Jana Pilihan Skala Diskrit 4 Bahagian (5 Tahap Skor)
-def get_discrete_options(max_val):
+# Fungsi Jana Pilihan Skala Diskrit 5 Tahap Beserta Label Pada Butang
+def get_discrete_options_with_labels(max_val):
     step = max_val / 4.0
+    labels = [
+        "Sangat Tidak Setuju",
+        "Tidak Setuju",
+        "Neutral",
+        "Setuju",
+        "Sangat Setuju"
+    ]
     options = []
     for i in range(5):
         val = round(i * step, 2)
-        options.append(int(val) if val.is_integer() else val)
+        num_str = str(int(val) if val.is_integer() else val)
+        options.append(f"{num_str} ({labels[i]})")
     return options
 
 # 5. Struktur Rubrik Berdasarkan Aspek
@@ -218,7 +226,7 @@ else:
         <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
             <div style="margin-right: 8px; font-size: 16px; line-height: 1.4;">💡</div>
             <div style="color: #000000; line-height: 1.4;">
-                <b>Cara Pemarkahan:</b> Sila <b>klik terus pada butang skor</b> (skala diskrit 4 bahagian) bagi setiap aspek yang dinilai. Markah keseluruhan akan dikira secara automatik.
+                <b>Cara Pemarkahan:</b> Sila <b>klik terus pada butang skor</b> (skala diskrit 5 tahap) bagi setiap aspek yang dinilai. Markah keseluruhan akan dikira secara automatik.
             </div>
         </div>
         <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
@@ -228,7 +236,12 @@ else:
             </div>
         </div>
         <div style="padding-left: 26px; color: #000000; line-height: 1.4;">
-            <b>Skala Pemarkahan:</b> Skor Minimum, 0 = Sangat Tidak Setuju |<---------->| Skor Maksimum = Sangat Setuju
+            <b>Skala Pemarkahan (5 Tahap):</b><br>
+            1. <b>Sangat Tidak Setuju</b> (Skor Minimum / 0)  | 
+            2. <b>Tidak Setuju</b>  | 
+            3. <b>Neutral</b>  | 
+            4. <b>Setuju</b>  | 
+            5. <b>Sangat Setuju</b> (Skor Maksimum)
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -243,26 +256,25 @@ else:
         sub_score_total = 0.0
         
         for a_idx, (aspek_text, max_aspek) in enumerate(item["aspek"], 1):
-            col_text, col_input = st.columns([2.2, 1.8])
             max_label = int(max_aspek) if max_aspek.is_integer() else max_aspek
             
-            with col_text:
-                st.markdown(f"<div style='padding-top: 8px;'>• {aspek_text} <b>[Skor 0-{max_label}]</b></div>", unsafe_allow_html=True)
+            # Paparkan pernyataan aspek di atas butang supaya kelima-lima butang muat sebaris
+            st.markdown(f"<div style='margin-top: 8px; margin-bottom: 4px;'>• {aspek_text} <b>[Skor 0-{max_label}]</b></div>", unsafe_allow_html=True)
             
-            with col_input:
-                pilihan_skor = get_discrete_options(max_aspek)
-                val = st.pills(
-                    label=f"{item['kriteria']}_a{a_idx}",
-                    options=pilihan_skor,
-                    default=0,
-                    selection_mode="single",
-                    key=f"{id_poster_pilihan}_k{k_idx}_a{a_idx}",
-                    label_visibility="collapsed"
-                )
-                # Jika pengguna nyahpilih (None), anggap sebagai 0.0
-                skor_dipilih = float(val) if val is not None else 0.0
-                sub_score_total += skor_dipilih
-                aspek_scores[f"k{k_idx}_a{a_idx}"] = round(skor_dipilih, 2)
+            pilihan_skor = get_discrete_options_with_labels(max_aspek)
+            val = st.pills(
+                label=f"{item['kriteria']}_a{a_idx}",
+                options=pilihan_skor,
+                default=pilihan_skor[0],
+                selection_mode="single",
+                key=f"{id_poster_pilihan}_k{k_idx}_a{a_idx}",
+                label_visibility="collapsed"
+            )
+            
+            # Ekstrak angka skor dari teks butang (contoh: "1.5 (Setuju)" -> 1.5)
+            skor_dipilih = float(val.split(" ")[0]) if val is not None else 0.0
+            sub_score_total += skor_dipilih
+            aspek_scores[f"k{k_idx}_a{a_idx}"] = round(skor_dipilih, 2)
         
         kriteria_scores.append(sub_score_total)
         total_score += sub_score_total
